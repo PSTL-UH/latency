@@ -27,13 +27,19 @@ hostinfo               = unknown
 /usr/bin/oslevel       = unknown
 /bin/universe          = unknown
 
+PATH: /home/gabriel/HDF5/bin
 PATH: /home/gabriel/OpenMPI/bin
+PATH: /home/gabriel/VTRACE-5.05/bin
 PATH: /opt/gcc-4.1/bin/
 PATH: /opt/netscape/
+PATH: /home/gabriel/HDF5/bin
 PATH: /home/gabriel/OpenMPI/bin
+PATH: /home/gabriel/VTRACE-5.05/bin
 PATH: /opt/gcc-4.1/bin/
 PATH: /opt/netscape/
+PATH: /home/gabriel/HDF5/bin
 PATH: /home/gabriel/OpenMPI/bin
+PATH: /home/gabriel/VTRACE-5.05/bin
 PATH: /opt/gcc-4.1/bin/
 PATH: /opt/netscape/
 PATH: /usr/local/bin
@@ -292,7 +298,7 @@ configure:2888: test -s conftest.o
 configure:2891: $? = 0
 configure:2903: result: yes
 configure:2943: checking for LATENCY main directory
-configure:2956: result: /home/gabriel/Software/Parallel/latency
+configure:2956: result: /home/gabriel/latency/trunk
 configure:2961: checking for MPI install directory
 configure:2971: result: /home/gabriel/OpenMPI
 configure:2975: checking for MPI include directory
@@ -351,7 +357,6 @@ on salmon
 config.status:670: creating Makefile.defs
 config.status:670: creating include/latconfig.h
 config.status:773: creating include/lat_sys.h
-config.status:857: include/lat_sys.h is unchanged
 
 ## ---------------- ##
 ## Cache variables. ##
@@ -447,7 +452,7 @@ host_vendor='pc'
 includedir='${prefix}/include'
 infodir='${prefix}/info'
 large_step='65536'
-lat_dir='/home/gabriel/Software/Parallel/latency'
+lat_dir='/home/gabriel/latency/trunk'
 lat_tests='20'
 libdir='${exec_prefix}/lib'
 libexecdir='${exec_prefix}/libexec'

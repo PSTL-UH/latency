@@ -495,7 +495,7 @@ s,@ac_ct_CXX@,g++,;t t
 s,@F77@,gfortran,;t t
 s,@FFLAGS@,-g -O2,;t t
 s,@ac_ct_F77@,gfortran,;t t
-s,@lat_dir@,/home/gabriel/Software/Parallel/latency,;t t
+s,@lat_dir@,/home/gabriel/latency/trunk,;t t
 s,@mpi_dir@,/home/gabriel/OpenMPI,;t t
 s,@mpi_inc_dir@,/home/gabriel/OpenMPI/include,;t t
 s,@mpi_lib_dir@,/home/gabriel/OpenMPI/lib,;t t
