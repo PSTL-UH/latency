@@ -1,0 +1,5 @@
+- main for the HPL-datatype routine
+- add the overlap feature 
+- gnuplot scripts for analyzing the results
+
+- Big question: collective operations tests ? (Currently I would say yes).

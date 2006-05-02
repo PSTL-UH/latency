@@ -1,0 +1,27 @@
+#ifndef __LAT_SYS_H__
+#define __LAT_SYS_H__
+
+#ifndef MAXHOSTNAMELEN
+#define MAXHOSTNAMELEN 256
+#endif
+
+/* Set this flag if you want to use MPI-I/O for writing the results */
+#undef USE_MPIIO 
+
+/* Set this flag if you want to use MPI_Alloc_mem for allocating memory */
+#undef USE_MPI_ALLOC_MEM 
+
+/* Set this flag if you want to use MPI name service in the 
+   MPI_Comm_connect/accept scenario */
+#undef USE_NAMESERVICE
+
+/* Set this flag, if you would like to now how much time it takes
+   to establish the dynamic communicator */
+#undef DYNCOMM_TIMING
+
+/* Set this flag if you want to use the Hitachi SR8000 specific routines
+   to determine the coordinates of the processes in use (instead of
+   gethostname () */
+#undef SR8K 
+
+#endif

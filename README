@@ -1,0 +1,200 @@
+This is the latency-testsuite, version 0.9.5. Major goal of this
+testsuite is to provide building blocks for point-to-point benchmarks.
+For each builduing block the testsuite provides some examples,
+however, the major goal is that the user has an easily extendable
+benchmarking environment, where he can derive a communication benchmark 
+which is representing his application.
+
+Major features:
+ - vary your datatype, communicator and transfer primitiv according 
+   to your needs
+ - gnuplot readable output
+ - output redirectable into FILES (unix/MPI-IO)
+ - for each measurement you will have the average, max, min and
+   the standard deviation
+ - multiplicative increase in message length for small messages
+ - additive increase in message length for large messages 
+
+In case of any questions/problems, please contact Edgar Gabriel
+(egabriel@cs.utk.edu).
+
+=====================================================================
+Currently the following building blocks are considered:
+- data transfer: provide a routine which performs the actual
+		data exchange. Currently available are:
+
+		Two-sided primitives
+		---------------------
+		send_recv:	ping pong benchmark using 
+				MPI_Send/MPI_Recv
+		sendrecv:	ping pong benchmark using 
+				MPI_Sendrecv
+		isend_recv: 	ping pong benchmark using 
+				MPI_Isend/MPI_Recv
+		send_irecv: 	ping pong benchmark using 
+				MPI_Send/MPI_Irecv
+		
+		One-sided primitives
+		---------------------
+		put_winfence: 	ping pong using MPI_Put, synchronization by
+				MPI_Win_fence
+		get_winfence: 	ping pong using MPI_Get, synchronization by
+				MPI_Win_fence
+		put_startpost: 	ping ping using MPI_Put, synchronization by
+				MPI_Win_start/post/wait/complete
+		get_startpost: 	ping ping using MPI_Get, synchronization by
+				MPI_Win_start/post/wait/complete
+
+		put_winfence_duplex: 	duplex communication using MPI_Put, synchronization by
+           				MPI_Win_fence 
+	 	get_winfence_duplex: 	duplex communication using MPI_Get, synchronization by
+	        			MPI_Win_fence
+		put_startpost_duplex: 	duplex communication using MPI_Put, synchronization by
+		        		MPI_Win_start/post/wait/complete
+		get_startpost_duplex: 	duplex communication using MPI_Get, synchronization by
+			        	MPI_Win_start/post/wait/complete
+
+		The argument list of the data transfer primitives
+		------------------------------------------------------------
+		LAT_send_recv ( MPI_Comm comm, MPI_Datatype dat, int maxcount,
+				int partner, int sender, char *msg, char *filename,
+				MPI_Info info)
+		
+		MPI_Comm comm	  	communicator to be used
+		MPI_Datatype dat 	datatype to be used
+		int maxcount 		maximum number of elements to be sent
+		int partner 		rank of the partner processes used in 
+					the ping pong benchmarks
+
+		int sender  		flag indicating, whether one sends 
+					first (1) or receives first (0) in the 
+					ping pong benchmark
+
+		char *msg  		Additional msg to be printed when the
+					benchmark starts. (Typically it should
+					contains a human readable form of what 
+					communicator is used and what datatype).
+
+		char *filename	 	name of the file where to write the 
+					results. If filename is NULL, output 
+					will be sent to stdout.
+ 
+                MPI_Info info           hints passed down to the communication
+                                        primitives. As in MPI-2, a transfer
+                                        primitive might ignore an info object,
+                                        in case it does not support the required
+                                        feature.
+                                        Currently supported info-objects by 
+                                        latency:
+                                        - lat_info_numseg: [n] send each message
+                                          length in n messages.
+                                        - lat_info_testresult: [0 or 1] verify
+                                          the data which has been transfered.
+                                          (might remove somce caching effects).
+                                        - lat_info_overlap: [0 or 1] try to
+                                          overlap the data transfer with local 
+                                          computations.
+
+- datatype:	the transfer routines are basically written in a way,
+		that they can take any datatype provided by the main
+		program. Therefore, the user can provide the der. datatype
+		used in his application and execute ping-pong benchmarks
+		with it. Since the requirements for each derived
+		datatype vary greatly, not default interface is defined	
+		here. 
+		
+		The following routines are provided currently:
+
+		twocontint 	creates a derived datatype using 
+				MPI_Type_contiguous consisting of two int's.
+		twovecint_nogap	createsa der. datatype using
+				MPI_Type_vector using blocks consisting
+				of two int's whithout a gap between each block
+		twovecint_twointgap	createsa der. datatype using
+				MPI_Type_vector using blocks consisting
+				of two int's with a gap of two int's 
+				between each block
+		92elements	A derived datatype consisting of 92 elements
+				created by MPI_Type_struct ( using char,
+				ints and doubles internally).
+		hpl_types	creates derived datatypes like used in the
+				HPL benchmark. This routine takes
+				three arguments: 
+				numblocks: number of blocks to be generated
+				blocklength: number of doubles in each block
+				distance: number of doubles distance between
+					each block.
+
+-communicators:	Currently the creation of two different communicators
+		are implemented.
+
+		spawn:		create an inter-communicator using
+				MPI_Comm_spawn ( MPI-2)
+		connect:	create an inter-communicator using
+				MPI_Comm_connect/accept ( MPI-2)
+                join:           create an inter-communicator using
+                                MPI_Comm_join ( MPI-2)
+
+- utils:	Some basic utility routines mainly dealing with the
+		output and the memory allocation. The only
+		relevant option here for the end-user is the 
+		
+			-DUSE_MPI_ALLOC_MEM 
+
+		flag in the Makefile. If set, dynamic memory will be 
+		allocated by using this MPI-2 routine (which in theory
+		should return some 'fast' memory).	
+		Will be converted to a configure option later on.
+
+- mains:	As mentioned previously, the purpose of the main programs
+		provided here are to provide examples and frameworks on
+		how to use the building blocks provided. The following
+		examples are provided:
+		
+		basic:		Basic p2p benchmark using MPI_COMM_WORLD
+				and the datatype MPI_Byte between rank
+				0 and 1.
+
+		basictoall:	Same like basic, but the benchmark is 
+				executed between the ranks 0-{1,2,..np-1}
+				sequentially. 
+
+		allbasictypes:	Same like basic, but using the datatypes
+				MPI_INT, MPI_FLOAT and MPI_DOUBLE.
+
+		alltransfer:	Same like basic, but using all two-sided
+				transfer routiens provided (send_recv,
+				isend_recv, send_irecv, sendrecv)
+
+		alldertypes: 	Same like basic but using the derived datatypes
+				twocontint, twovecint_nogap, 
+				twovecint_twointgap and 92elements
+
+		onesided:	the same like basic but using all one-sided
+				communication primitives provided
+				(put_winfence, get_winfence, put_startpost,
+				get_startpost).
+
+		spawn:		the same like basic, but creating a dynamic
+				communicator using MPI_Comm_spawn.
+				Attention: 2 (two) executables are required
+				for this test, spawn-father and spawn-son.
+				The second executable is started by the
+				first one.
+
+		connect:	the same like basic, but creating a dynamic
+				communicator using MPI_Comm_connect/accept.
+				Attention: 2 (two) executables are required
+				for this test, connect-brother and 
+				connect-sister. Both have to be started 
+				manually.
+				
+
+Main author:
+	Edgar Gabriel <egabriel@cs.utk.edu>
+
+Historic authors:
+	Thomas Beisel <beisel@hlrs.de>
+	Matthias Mueller <mueller@hlrs.de>
+	Holger Berger <hberger@cshpcpsp.de>
+

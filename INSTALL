@@ -1,0 +1,14 @@
+Installing latency is straight forward. Please run the configure
+script, specifying as a minimum the directory of the MPI library
+used. You can view all options with
+
+./configure --help
+
+Then type 
+
+make
+
+or, if you would like to disable some MPI-2 features (e.g.
+dynamic communicators, one-sided operations), please type
+
+make nompi2

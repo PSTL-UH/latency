@@ -1,0 +1,18 @@
+# Generated automatically from Makefile.in by configure.
+#Path of MPI-Library on the Machine
+
+MPI_DIR     = @mpi_dir@
+MPI_INC_DIR = @mpi_inc_dir@
+MPI_BIN_DIR = @mpi_bin_dir@
+MPI_LIB_DIR = @mpi_lib_dir@
+
+LATENCY_DIR = @lat_dir@
+BIN_DIR     = $(LATENCY_DIR)/bin
+
+#Set some Flags
+CC          =   $(MPI_BIN_DIR)/@mpi_cc@
+FC          =   $(MPI_BIN_DIR)/@mpi_f77@
+CFLAGS      =   @CFLAGS@ -I$(LATENCY_DIR)/include 
+FFLAGS      =   @FFLAGS@ -I$(LATENCY_DIR)/include 
+LDFLAGS     =   -lm 
+FLDFLAGS    =   -lm

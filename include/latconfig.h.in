@@ -1,0 +1,15 @@
+#ifndef __LATCONFIG_H__
+#define __LATCONFIG_H__
+
+#define NUM_TESTS     @num_tests@
+#define BAND_TESTS    @band_tests@
+#define LATENCY_TESTS @lat_tests@
+
+#define NUM_TESTS_LONG     @num_long_tests@
+#define BAND_TESTS_LONG    @band_long_tests@
+
+#define MAX_SHORT_LEN      @max_short_len@
+#define MAX_LEN            @max_len@
+#define LARGE_STEP         @large_step@
+
+#endif
