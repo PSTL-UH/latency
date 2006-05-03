@@ -68,6 +68,27 @@ static int _lat_next_msglen ( int maxcount, int dsize, int numseg, int clen )
     return ret;
 }
 
+static int _lat_file_next_msglen ( int maxcount, int dsize, int numseg, int clen )
+{
+    int tmpmax;
+    int ret;
+    int tmpstep;
+
+    if ( (maxcount*dsize) > MAX_SHORT_LEN )
+        tmpmax = MAX_SHORT_LEN/dsize;
+    else
+        tmpmax = (maxcount * dsize );
+
+    tmpstep = (int) (floor(FILE_LARGE_STEP/(dsize * numseg))) * numseg;
+
+    if ( clen < tmpmax )
+        ret = clen * 2;
+    else
+        ret = clen + tmpstep;
+
+    return ret;
+}
+
 
 
 

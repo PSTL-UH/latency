@@ -257,12 +257,57 @@ dnl ==================================================
 dnl ==================================================
 AC_MSG_CHECKING(for message step for large messages)
 AC_ARG_WITH(b,
- [  --with-large_step=LENGTH          Message step for large messages (default=65536)],
+ [  --with-large-step=LENGTH          Message step for large messages (default=65536)],
     large_step="${withval}", large_step="65536")
     AC_MSG_RESULT(${large_step})
     AC_SUBST(large_step)
 dnl ==================================================	
 
+
+dnl ==================================================
+AC_MSG_CHECKING(for number of measurements per short message in file tests)
+AC_ARG_WITH(num_file_tests,
+ [  --with-num-file-tests=NUMTESTS    Number of measurements per short msg. for file tests (default=10)],
+    num_file_tests="${withval}", num_file_tests="10")
+    AC_MSG_RESULT(${num_file_tests})
+    AC_SUBST(num_file_tests)
+dnl ==================================================	
+
+dnl ==================================================
+AC_MSG_CHECKING(for number of measurements per long message in file tests)
+AC_ARG_WITH(num_file_long_tests,
+ [  --with-num-file-long-tests=NUMTESTS  Number of measurements per long msg. for file tests (default=10)],
+    num_file_long_tests="${withval}", num_file_long_tests="10")
+    AC_MSG_RESULT(${num_file_long_tests})
+    AC_SUBST(num_file_long_tests)
+dnl ==================================================	
+
+dnl ==================================================
+AC_MSG_CHECKING(for number of tests per measurements for short message in file tests)
+AC_ARG_WITH(band_file_tests,
+ [  --with-band-file-tests=NUMTESTS  Number of tests per measurements for short msg. for file tests (default=10)],
+    band_file_tests="${withval}", band_file_tests="10")
+    AC_MSG_RESULT(${band_file_tests})
+    AC_SUBST(band_file_tests)
+dnl ==================================================	
+
+dnl ==================================================
+AC_MSG_CHECKING(for number of tests per measurements for long messages in file tests)
+AC_ARG_WITH(band_file_long_tests,
+ [  --with-band-file-long-tests=NUMTESTS   Number of tests per measurements for long msg. in file tests(default=5)],
+    band_file_long_tests="${withval}", band_file_long_tests="5")
+    AC_MSG_RESULT(${band_file_long_tests})
+    AC_SUBST(band_file_long_tests)
+dnl ==================================================	
+
+dnl ==================================================
+AC_MSG_CHECKING(for message step for large messages in file tests)
+AC_ARG_WITH(b,
+ [  --with-file-large-step=LENGTH    Message step for large messages in file tests (default=65536)],
+    file_large_step="${withval}", file_large_step="65536")
+    AC_MSG_RESULT(${file_large_step})
+    AC_SUBST(file_large_step)
+dnl ==================================================	
 
 dnl Checks for header files.
 #AC_HEADER_STDC

@@ -17,6 +17,11 @@ nompi2:
 	cd datatypes ; make ; cd ..
 	cd mains; make nompi2 ; cd ..
 
+io:
+	cd utils; make ; cd ..
+	cd seq_io; make ; cd ..
+	cd mains; make io; cd ..
+
 
 clean:
 	cd utils; make clean ; cd ..

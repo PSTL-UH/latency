@@ -8,8 +8,16 @@
 #define NUM_TESTS_LONG     @num_long_tests@
 #define BAND_TESTS_LONG    @band_long_tests@
 
+#define NUM_FILE_TESTS     @num_file_tests@
+#define BAND_FILE_TESTS    @band_file_tests@
+
+#define NUM_FILE_TESTS_LONG     @num_file_long_tests@
+#define BAND_FILE_TESTS_LONG    @band_file_long_tests@
+
 #define MAX_SHORT_LEN      @max_short_len@
 #define MAX_LEN            @max_len@
 #define LARGE_STEP         @large_step@
+
+#define FILE_LARGE_STEP         @file_large_step@
 
 #endif

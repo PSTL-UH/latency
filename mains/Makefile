@@ -274,13 +274,14 @@ join: join-brother join-sister
 write_test.o:	write_test.c ../include/latency.h
 	$(CC) -c write_test.c $(CFLAGS)
 write_test:	write_test.o ../utils/eddhr.o  \
-	../utils/calc.o ../seq_io/seq_write.o \
-	../utils/utils.o
+	../utils/calc.o ../utils/utils.o       \
+	../seq_io/seq_write.o ../seq_io/seq_fwrite.o
 	$(CC) -o write_test write_test.o \
 		../utils/eddhr.o       \
 		../utils/utils.o       \
 		../utils/calc.o        \
-		../seq_io/seq_write.o  
+		../seq_io/seq_write.o  \
+		../seq_io/seq_fwrite.o  
 	mv write_test ../bin/
 
 clean:

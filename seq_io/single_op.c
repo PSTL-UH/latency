@@ -58,6 +58,8 @@ int LAT_FILE_METHODOLOGY (MPI_Comm comm, MPI_Datatype dat, int maxcount,
 /*-------------------------------- BANDWIDTH ---------------------------------*/
 static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcount, MPI_Info info)
 { 
+    double total_stime, total_etime;
+    long totallength=0;
     double starttime, endtime, min, max, s_time, E, m, s_m, sum=0., sum2=0.0;
     double t1, t2, ttime, tvtime=0.0;
     double a[BAND_TESTS];
@@ -89,7 +91,8 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcoun
         EDDHR_cached_get_description (dat, &eddhr_desc);
     }
 
-    for (cnt=1; cnt<=maxcount; cnt =_lat_next_msglen(maxcount,size,1,cnt)) { 
+    total_stime = MPI_Wtime ();
+    for (cnt=1; cnt<=maxcount; cnt =_lat_file_next_msglen(maxcount,size,1,cnt)) { 
         long x;
         double z;
         
@@ -101,8 +104,8 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcoun
         c.cnt      = cnt;
 	c.len      = cnt * size;
 
-        band_limit = (cnt < MAX_SHORT_LEN ? BAND_TESTS : BAND_TESTS_LONG );
-        num_limit  = (cnt < MAX_SHORT_LEN ? NUM_TESTS  : NUM_TESTS_LONG );
+        band_limit = (cnt < MAX_SHORT_LEN ? BAND_FILE_TESTS : BAND_FILE_TESTS_LONG );
+        num_limit  = (cnt < MAX_SHORT_LEN ? NUM_FILE_TESTS  : NUM_FILE_TESTS_LONG );
         
         if ( testresult ) {
             EDDHR_cached_set_testdata (buf, cnt, dat, eddhr_desc );
@@ -110,6 +113,7 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcoun
 	}
 	
 	if ( testresult || overlap ) {
+	    totallength +=c.len*num_limit/1024;
             t1 =  MPI_Wtime();
             for ( i=0; i <num_limit; i++ ) {
                 LAT_FILE_MEASUREMENT_INIT_FN (c);
@@ -123,6 +127,7 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcoun
 	    calclen = lat_calc_get_size( cnt, (ttime/(num_limit*2)), p, overlap_method,0);
 	}
 
+	totallength +=c.len/1024*(num_limit*band_limit);
         for (x=0; x<band_limit; x++) { 
             LAT_FILE_MEASUREMENT_INIT_FN (c);
             LAT_FILE_MEASUREMENT_FIN_FN (c);
@@ -172,6 +177,9 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcoun
         LAT_print_band(LAT_FACTOR*cnt*size, s_time,max/num_limit, min/num_limit, E/s_m, 
 		       calclen );
     }
+    total_etime = MPI_Wtime();
+    LAT_print("Total amount of data %ld, total time %lf, avg. bandwidth %lf\n", 
+	      totallength, (total_etime-total_stime), totallength/(total_etime-total_stime));
 
     if ( testresult ) {
         EDDHR_cached_free_description(&eddhr_desc);
