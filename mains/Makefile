@@ -283,7 +283,7 @@ write_test:	write_test.o ../utils/eddhr.o  \
 		../utils/calc.o        \
 		../seq_io/seq_write.o  \
 		../seq_io/mpi_write.o  \
-		../seq_io/seq_fwrite.o  
+		../seq_io/seq_fwrite.o  $(LDFLAGS)
 	mv write_test ../bin/
 
 clean:

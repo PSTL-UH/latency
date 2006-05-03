@@ -32,7 +32,7 @@
 #define LAT_WRITE 1
 
 /* define how the file shall be opened */
-#define LAT_FILE_MODE  MPI_MODE_WRONLY
+#define LAT_FILE_MODE  MPI_MODE_WRONLY|MPI_MODE_CREATE
 
 /* Implementation of methodology specific initialization functions */
 #define LAT_FILE_METHODOLOGY_INIT_FN(_fd,_path,_filename,_mode){ \
