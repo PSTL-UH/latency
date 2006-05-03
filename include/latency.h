@@ -4,6 +4,8 @@
 #include <math.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <sys/utsname.h>
 #include <time.h>
 #include <unistd.h>

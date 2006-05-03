@@ -41,12 +41,7 @@ int LAT_FILE_METHODOLOGY (MPI_Comm comm, MPI_Datatype dat, int maxcount,
         LAT_print_status();
         LAT_print_description(msg, LAT_FILE_METHODOLOGY_STRING, info);
 
-//	LAT_FILE_METHODOLOGY_INIT_FN(obj, path, testfile, LAT_FILE_MODE);
-    char *_realpath;                                             
-    asprintf(&_realpath,"%s/%s",path,testfile);                  
-    printf("%s\n", _realpath);
-    obj = open (_realpath,LAT_FILE_MODE);                               
-//    free(_realpath);                                             
+	LAT_FILE_METHODOLOGY_INIT_FN(obj, path, testfile, LAT_FILE_MODE);
 
         LAT_print_bandinit ();
         LAT_FILE_MEASUREMENT (obj, dat, maxcount, info);

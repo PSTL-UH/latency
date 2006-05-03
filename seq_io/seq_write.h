@@ -32,13 +32,14 @@
 #define LAT_WRITE 1
 
 /* define how the file shall be opened */
-#define LAT_FILE_MODE "w"
+#define LAT_FILE_MODE O_CREAT|O_WRONLY
 
 /* Implementation of methodology specific initialization functions */
 #define LAT_FILE_METHODOLOGY_INIT_FN(_fd,_path,_filename,_mode){ \
     char *_realpath;                                             \
-    asprintf(_realpath,"%s/%s",_path,_filename);                 \
-    _fd = open (_realpath,_mode);                                \
+    asprintf(&_realpath,"%s/%s",_path,_filename);                \
+    _fd = open (_realpath,_mode,0644);                           \
+    if (_fd == -1 ) MPI_Abort (MPI_COMM_WORLD, 1);               \
     free(_realpath);                                             \
 }
 

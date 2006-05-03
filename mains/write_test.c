@@ -16,8 +16,8 @@ int main ( int argc, char **argv)
   if ( mynode == 0 )
       LAT_seq_write ( MPI_COMM_WORLD, /* communicator */
                       MPI_INT,       /* datatype */
-                      MAX_LEN,        /* max. count number */
-                      1,              /* active process (yes/no) */
+                      MAX_LEN/4,     /* max. count number */
+                      1,             /* active process (yes/no) */
                       "sequential, datatype MPI_INT", 
                       NULL,           /* filename, NULL=stdout */
 		      "/tmp",         /* path for the resulting file */
@@ -27,8 +27,8 @@ int main ( int argc, char **argv)
   if ( mynode == 1 )
       LAT_seq_write ( MPI_COMM_WORLD, /* communicator */
                       MPI_INT,       /* datatype */
-                      MAX_LEN,        /* max. count number */
-                      0,              /* active process (yes/no) */
+                      MAX_LEN/4,     /* max. count number */
+                      0,             /* active process (yes/no) */
                       "sequential, datatype MPI_INT", 
                       NULL,           /* filename, NULL=stdout */
 		      "/tmp",         /* path for the resulting file */
