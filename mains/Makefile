@@ -3,7 +3,7 @@ include ../Makefile.defs
 
 all: basic basic-info basictoall allbasictypes alltransfer alldertypes \
 	spawn connect onesided onesided-multiseg onesided-alldertypes \
-	duplex join-brother join-sister
+	duplex join
 
 nompi2: basic basictoall allbasictypes alltransfer alldertypes 
 io:	write_test

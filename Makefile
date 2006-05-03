@@ -19,7 +19,7 @@ nompi2:
 
 io:
 	cd utils; make ; cd ..
-	cd seq_io; make ; cd ..
+	cd io; make ; cd ..
 	cd mains; make io; cd ..
 
 
@@ -29,7 +29,9 @@ clean:
 	cd datatypes ; make clean ; cd ..
 	cd communicators; make clean ; cd ..
 	cd mains; make clean ; cd ..
+	cd io; make clean; cd ..
 	rm -f bin/basic bin/basic-info bin/basictoall bin/alltransfer bin/allbasictypes
 	rm -f bin/alldertypes bin/onesided bin/spawn-father
 	rm -f bin/spawn-son bin/connect-brother bin/connect-sister
 	rm -f bin/onesided-multiseg bin/onesided-alldertypes bin/duplex
+	rm -f bin/write_test
