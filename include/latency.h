@@ -89,7 +89,14 @@ MPI_Comm LAT_comm_join_brother(MPI_Info info );
 MPI_Comm LAT_comm_join_sister(MPI_Info info, int argc, char **argv);
 
 
+/* prototypes for file I/O benchmarks */
+int LAT_seq_write (MPI_Comm comm, MPI_Datatype dat, int maxcount, int active,
+		   char *msg, char *filename, char *path, char *testfile, MPI_Info info);
+
 int lat_calc_get_size (int msglen, double ttime, int partner, int method, int verbose);
 double lat_calc_exec (int problemsize);
+
+
+
 
 #endif /* __LATENCY_H__ */

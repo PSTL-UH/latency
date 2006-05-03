@@ -96,10 +96,15 @@ int lat_calc_get_size (int msglen, double ttime, int partner, int method, int ve
 	    lat_psize = oldpsize;
 	}
 	
-	MPI_Sendrecv(&lat_psize, 1, MPI_INT, partner, 0, 
-		     &r_psize, 1, MPI_INT, partner, 0, lat_user_comm, 
-		     &status);
-	
+	if ( partner != MPI_UNDEFINED ) {
+	    MPI_Sendrecv(&lat_psize, 1, MPI_INT, partner, 0, 
+			 &r_psize, 1, MPI_INT, partner, 0, lat_user_comm, 
+			 &status);
+	}
+	else {
+	    r_psize = lat_psize;
+	}
+
 	/* Take the smaller value. The tendency seems to be, that one process
 	   has a much too high value for the calculation. */
 	if (r_psize < lat_psize ) {

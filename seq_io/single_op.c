@@ -1,92 +1,80 @@
 
 /*******************************************************************************
 *        								       *
-* Filename	: lateny.c  $Id: ping_pong.c,v 1.3 2005/01/14 12:47:20 hpceg Exp $						       *
+* Filename	: lateny.c  $Id: single_op.c                                   *
 *									       *
-* Problem       : 						       *
-
+* Problem       : 						               *
 *******************************************************************************/
-
 
 #include "latency.h"
 #include "latency_internal.h"
 #include "eddhr.h"
 
-#include "lat_transfer.h"
-
+#include "lat_file.h"
+MPI_Comm lat_user_comm;
 /*--------------------------------- Functions --------------------------------*/
 
-static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, LAT_TMP_OBJTYPE tobj, 
-				  MPI_Datatype dat, int maxcount, MPI_Info info);
+static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcount, MPI_Info info);
 
 static char *buf;
-static char *buf2;
-MPI_Comm lat_user_comm;
 
-struct LAT_comm_object {
+struct LAT_file_object {
     LAT_OBJTYPE       obj;
-    char            *sbuf;
-    char            *rbuf;
+    char             *buf;
     int               cnt;
-    int            numseg;
-    int           bufstep;
     int               len;
     MPI_Datatype      dat;
 }; 
 
 int LAT_FILE_METHODOLOGY (MPI_Comm comm, MPI_Datatype dat, int maxcount, 
 			  int active, char *msg, char *filename, 
-			  MPI_Info info )
+			  char *path, char *testfile,  MPI_Info info )
 {
     LAT_OBJTYPE obj;
 
-    lat_user_comm = comm;
     LAT_print_init ( filename, -1, comm, active );
-    LAT_print_hostname ( sender );
-    buf  =  LAT_alloc_memory ( LAT_BUF_FACTOR * maxcount, dat );
-    if ( LAT_NEED_SECOND_BUF) 
-      buf2 =  LAT_alloc_memory ( maxcount, dat );
+    LAT_print_hostname ( active );
 
     if (active) { 
+	buf  =  LAT_alloc_memory ( LAT_BUF_FACTOR * maxcount, dat );
+
         LAT_print_status();
         LAT_print_description(msg, LAT_FILE_METHODOLOGY_STRING, info);
-    }
 
-    LAT_FILE_METHODOLOGY_INIT_FN(comm,obj,dat,maxcount,info,buf,active);
+//	LAT_FILE_METHODOLOGY_INIT_FN(obj, path, testfile, LAT_FILE_MODE);
+    char *_realpath;                                             
+    asprintf(&_realpath,"%s/%s",path,testfile);                  
+    printf("%s\n", _realpath);
+    obj = open (_realpath,LAT_FILE_MODE);                               
+//    free(_realpath);                                             
 
-    if (sender) { 
         LAT_print_bandinit ();
         LAT_FILE_MEASUREMENT (obj, dat, maxcount, info);
-    }
 
-  
-    LAT_FILE_METHODOLOGY_FIN_FN(comm, obj, tobj);
+	LAT_FILE_METHODOLOGY_FIN_FN(obj);
+	LAT_free_memory ( buf  );
+    }
     
-    LAT_free_memory ( buf  );
-    if ( LAT_NEED_SECOND_BUF) 
-       LAT_free_memory ( buf2 );
     LAT_print_finalize ();
 
     return(MPI_SUCCESS);
 }
 
 /*-------------------------------- BANDWIDTH ---------------------------------*/
-static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, LAT_TMP_OBJTYPE tobj, 
-				  MPI_Datatype dat, int maxcount, int p, 
-				  MPI_Info info)
+static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcount, MPI_Info info)
 { 
     double starttime, endtime, min, max, s_time, E, m, s_m, sum=0., sum2=0.0;
     double t1, t2, ttime, tvtime=0.0;
     double a[BAND_TESTS];
     int cnt, i, size, flag, calclen=0;
     int band_limit, num_limit;
+    int p = MPI_UNDEFINED;
     MPI_Aint extent;
     EDDHR_head *eddhr_desc=NULL;
-    struct LAT_comm_object c;
+    struct LAT_file_object c;
 
     /* Options for the current run */
     int testresult=0;       /* default: no */
-    int numseg=1;           /* default: one */
     int overlap=0;          /* default: no */
     int overlap_method=0;   /* adapt the problem size to transfer time */
 
@@ -95,21 +83,18 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, LAT_TMP_OBJTYPE tobj,
 
     if ( info != MPI_INFO_NULL ) {
         CHECK_INFO_FOR_TESTRESULT(info, testresult);
-        CHECK_INFO_FOR_NUMSEG(info, numseg);
 	CHECK_INFO_FOR_OVERLAP(info, overlap)
     }
 
-    c.obj     = obj;
-    c.sbuf    = buf;
-    c.rbuf    = buf2;
-    c.defdisp = maxcount*extent;
-    c.dat     = dat;
+    c.obj = obj;
+    c.buf = buf;
+    c.dat = dat;
 
     if ( testresult ) {
         EDDHR_cached_get_description (dat, &eddhr_desc);
     }
 
-    for (cnt=numseg; cnt<=maxcount; cnt =_lat_next_msglen(maxcount,size,numseg,cnt)) { 
+    for (cnt=1; cnt<=maxcount; cnt =_lat_next_msglen(maxcount,size,1,cnt)) { 
         long x;
         double z;
         
@@ -118,16 +103,14 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, LAT_TMP_OBJTYPE tobj,
         tvtime = ttime = 0.0;
         min = 99999000.0;
         
-        c.bufstep  = extent * cnt/numseg;
         c.cnt      = cnt;
-	c.len      = cnt * extent;
+	c.len      = cnt * size;
 
         band_limit = (cnt < MAX_SHORT_LEN ? BAND_TESTS : BAND_TESTS_LONG );
         num_limit  = (cnt < MAX_SHORT_LEN ? NUM_TESTS  : NUM_TESTS_LONG );
         
         if ( testresult ) {
             EDDHR_cached_set_testdata (buf, cnt, dat, eddhr_desc );
-            EDDHR_cached_set_testdata (buf2, cnt, dat, eddhr_desc );
             tvtime = 99999000.0;
 	}
 	
@@ -151,7 +134,7 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, LAT_TMP_OBJTYPE tobj,
             
             starttime = MPI_Wtime();
 	    for (i=0; i<num_limit; i++) {
-                if ( testresult ) {
+                if ( LAT_WRITE && testresult ) {
                     EDDHR_cached_set_testdata (buf, cnt, dat, eddhr_desc);
                 }
 
@@ -161,8 +144,9 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, LAT_TMP_OBJTYPE tobj,
 		}
                 LAT_FILE_MEASUREMENT_FIN_FN (c);
 
-                if ( testresult ) {
-                    EDDHR_cached_check_testdata(buf2,cnt,dat,&flag,eddhr_desc);
+
+                if ( !LAT_WRITE && testresult ) {
+                    EDDHR_cached_check_testdata(buf,cnt,dat,&flag,eddhr_desc);
                     if ( flag != MPI_IDENT ) printf("cnt=%d data wrong\n", cnt);
                 }
             }

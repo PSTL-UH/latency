@@ -492,9 +492,9 @@ s,@OBJEXT@,o,;t t
 s,@CXX@,g++,;t t
 s,@CXXFLAGS@,-g -O2,;t t
 s,@ac_ct_CXX@,g++,;t t
-s,@F77@,gfortran,;t t
-s,@FFLAGS@,-g -O2,;t t
-s,@ac_ct_F77@,gfortran,;t t
+s,@F77@,,;t t
+s,@FFLAGS@,,;t t
+s,@ac_ct_F77@,,;t t
 s,@lat_dir@,/home/gabriel/latency/trunk,;t t
 s,@mpi_dir@,/home/gabriel/OpenMPI,;t t
 s,@mpi_inc_dir@,/home/gabriel/OpenMPI/include,;t t

@@ -6,6 +6,7 @@ all: basic basic-info basictoall allbasictypes alltransfer alldertypes \
 	duplex join-brother join-sister
 
 nompi2: basic basictoall allbasictypes alltransfer alldertypes 
+io:	write_test
 
 # Two-sided operations
 basic.o: basic.c ../include/latency.h 
@@ -269,6 +270,18 @@ join-sister: join-sister.o ../transfer/send_recv.o \
 
 join: join-brother join-sister
 	mv join-brother join-sister $(BIN_DIR)
+
+write_test.o:	write_test.c ../include/latency.h
+	$(CC) -c write_test.c $(CFLAGS)
+write_test:	write_test.o ../utils/eddhr.o  \
+	../utils/calc.o ../seq_io/seq_write.o \
+	../utils/utils.o
+	$(CC) -o write_test write_test.o \
+		../utils/eddhr.o       \
+		../utils/utils.o       \
+		../utils/calc.o        \
+		../seq_io/seq_write.o  
+	mv write_test ../bin/
 
 clean:
 	rm -f *.o *~ 
