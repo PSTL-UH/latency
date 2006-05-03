@@ -8,3 +8,7 @@
 #include "seq_fwrite.h"
 #endif
 
+#ifdef MPI_WRITE
+#include "mpi_write.h"
+#endif
+
