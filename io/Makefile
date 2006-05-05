@@ -1,7 +1,8 @@
 
 include ../Makefile.defs
 
-all: seq_write seq_fwrite mpi_write mpi_iwrite seq_read seq_fread mpi_read
+all: seq_write seq_fwrite mpi_write mpi_iwrite seq_read seq_fread mpi_read \
+	mpi_iread
 
 
 # Two-sided operations

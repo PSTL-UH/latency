@@ -1,11 +1,11 @@
-#ifndef __LAT_MPI_READ__
-#define __LAT_MPI_READ__
+#ifndef __LAT_MPI_IREAD__
+#define __LAT_MPI_IREAD__
 
 /* Public interface */
 #define LAT_OBJTYPE      MPI_File
 
-#define LAT_FILE_METHODOLOGY_STRING "MPI_File_read()"
-#define LAT_FILE_METHODOLOGY        LAT_mpi_read
+#define LAT_FILE_METHODOLOGY_STRING "MPI_File_iread()/MPI_Wait()"
+#define LAT_FILE_METHODOLOGY        LAT_mpi_iread
 
 /* set for methods doing simplex data transfer to 1, 
    set for methods doing duplex data transfer  to 2 */
@@ -26,7 +26,7 @@
 #define LAT_TIME_FACTOR     1
 
 /* internal interfaces */
-#define LAT_FILE_MEASUREMENT       LAT_mpi_read_test
+#define LAT_FILE_MEASUREMENT       LAT_mpi_iread_test
 
 /* define whether we are reading or writing */
 #define LAT_WRITE 0
@@ -52,10 +52,12 @@
 
 /* bandwidth measurement functions */
 #define LAT_FILE_MEASUREMENT_INIT_FN(_c) {    \
-  MPI_Status _status;                         \
-  MPI_File_read ( _c.obj, _c.buf, _c.cnt, _c.dat, &_status); \
+  MPI_File_iread ( _c.obj, _c.buf, _c.cnt, _c.dat, &_c.req); \
 } 
 
-#define LAT_FILE_MEASUREMENT_FIN_FN(_c) {}
+#define LAT_FILE_MEASUREMENT_FIN_FN(_c) {\
+  MPI_Status _status;                    \
+  MPI_Wait(&_c.req,&_status);            \
+}
 
-#endif /* __LAT_MPI_READ__ */
+#endif /* __LAT_SEQ_IREAD__ */

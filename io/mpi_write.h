@@ -4,7 +4,7 @@
 /* Public interface */
 #define LAT_OBJTYPE      MPI_File
 
-#define LAT_FILE_METHODOLOGY_STRING "MPI_Write()"
+#define LAT_FILE_METHODOLOGY_STRING "MPI_File_write()"
 #define LAT_FILE_METHODOLOGY        LAT_mpi_write
 
 /* set for methods doing simplex data transfer to 1, 
