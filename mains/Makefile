@@ -276,13 +276,14 @@ write_test.o:	write_test.c ../include/latency.h
 write_test:	write_test.o ../utils/eddhr.o  \
 	../utils/calc.o ../utils/utils.o       \
 	../io/seq_write.o ../io/seq_fwrite.o \
-	../io/mpi_write.o
+	../io/mpi_write.o ../io/seq_read.o
 	$(CC) -o write_test write_test.o \
 		../utils/eddhr.o       \
 		../utils/utils.o       \
 		../utils/calc.o        \
 		../io/seq_write.o  \
 		../io/mpi_write.o  \
+		../io/seq_read.o   \
 		../io/seq_fwrite.o  $(LDFLAGS)
 	mv write_test ../bin/
 

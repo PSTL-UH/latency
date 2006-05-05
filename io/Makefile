@@ -1,7 +1,7 @@
 
 include ../Makefile.defs
 
-all: seq_write seq_fwrite mpi_write
+all: seq_write seq_fwrite mpi_write seq_read seq_fread mpi_read
 
 
 # Two-sided operations
@@ -13,6 +13,15 @@ seq_fwrite: seq_fwrite.h single_op.c ../include/latency.h ../utils/utils.c
 
 mpi_write: mpi_write.h single_op.c ../include/latency.h ../utils/utils.c
 	$(CC) -c single_op.c -o mpi_write.o -DMPI_WRITE $(CFLAGS)
+
+seq_read: seq_read.h single_op.c ../include/latency.h ../utils/utils.c
+	$(CC) -c single_op.c -o seq_read.o -DSEQ_READ $(CFLAGS)
+
+seq_fread: seq_fread.h single_op.c ../include/latency.h ../utils/utils.c
+	$(CC) -c single_op.c -o seq_fread.o -DSEQ_FREAD $(CFLAGS)
+
+mpi_read: mpi_read.h single_op.c ../include/latency.h ../utils/utils.c
+	$(CC) -c single_op.c -o mpi_read.o -DMPI_READ $(CFLAGS)
 
 clean:
 	rm -f *.o *~ 

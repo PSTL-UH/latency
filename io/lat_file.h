@@ -12,3 +12,6 @@
 #include "mpi_write.h"
 #endif
 
+#ifdef SEQ_READ
+#include "seq_read.h"
+#endif
