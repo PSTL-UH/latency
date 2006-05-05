@@ -15,3 +15,11 @@
 #ifdef SEQ_READ
 #include "seq_read.h"
 #endif
+
+#ifdef SEQ_FREAD
+#include "seq_fread.h"
+#endif
+
+#ifdef MPI_READ
+#include "mpi_read.h"
+#endif
