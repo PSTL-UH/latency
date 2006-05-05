@@ -23,6 +23,7 @@ struct LAT_file_object {
     char             *buf;
     int               cnt;
     int               len;
+    MPI_Request       req;
     MPI_Datatype      dat;
 }; 
 
@@ -184,7 +185,6 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcoun
     if ( testresult ) {
         EDDHR_cached_free_description(&eddhr_desc);
     }
-
 
     return;
 }

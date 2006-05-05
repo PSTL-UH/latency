@@ -6,7 +6,7 @@ all: basic basic-info basictoall allbasictypes alltransfer alldertypes \
 	duplex join
 
 nompi2: basic basictoall allbasictypes alltransfer alldertypes 
-io:	write_test
+io:	write_test write_test_overlap
 
 # Two-sided operations
 basic.o: basic.c ../include/latency.h 
@@ -286,6 +286,18 @@ write_test:	write_test.o ../utils/eddhr.o  \
 		../io/seq_read.o   \
 		../io/seq_fwrite.o  $(LDFLAGS)
 	mv write_test ../bin/
+
+write_test_overlap.o:	write_test_overlap.c ../include/latency.h
+	$(CC) -c write_test_overlap.c $(CFLAGS)
+write_test_overlap:	write_test_overlap.o ../utils/eddhr.o  \
+	../utils/calc.o ../utils/utils.o       \
+	../io/mpi_iwrite.o 
+	$(CC) -o write_test_overlap write_test_overlap.o \
+		../utils/eddhr.o       \
+		../utils/utils.o       \
+		../utils/calc.o        \
+		../io/mpi_iwrite.o  $(LDFLAGS)
+	mv write_test_overlap ../bin/
 
 clean:
 	rm -f *.o *~ 

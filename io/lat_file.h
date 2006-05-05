@@ -12,6 +12,10 @@
 #include "mpi_write.h"
 #endif
 
+#ifdef MPI_IWRITE
+#include "mpi_iwrite.h"
+#endif
+
 #ifdef SEQ_READ
 #include "seq_read.h"
 #endif
@@ -22,4 +26,8 @@
 
 #ifdef MPI_READ
 #include "mpi_read.h"
+#endif
+
+#ifdef MPI_IREAD
+#include "mpi_iread.h"
 #endif

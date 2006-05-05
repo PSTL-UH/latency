@@ -35,4 +35,4 @@ clean:
 	rm -f bin/alldertypes bin/onesided bin/spawn-father
 	rm -f bin/spawn-son bin/connect-brother bin/connect-sister
 	rm -f bin/onesided-multiseg bin/onesided-alldertypes bin/duplex
-	rm -f bin/write_test
+	rm -f bin/write_test bin/write_test_overlap
