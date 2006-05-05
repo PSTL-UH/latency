@@ -9,6 +9,7 @@ all:
 	cd transfer ; make ; cd ..
 	cd communicators; make ; cd ..
 	cd datatypes ; make ; cd ..
+	cd io; make ; cd ..
 	cd mains; make ; cd ..
 
 nompi2:
