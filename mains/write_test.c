@@ -15,7 +15,7 @@ int main ( int argc, char **argv)
 
 
 /* Test write */
-
+#if 0
   if ( mynode == 0 )
       LAT_seq_write ( MPI_COMM_WORLD, /* communicator */
                       MPI_INT,       /* datatype */
@@ -64,7 +64,7 @@ int main ( int argc, char **argv)
                       MPI_INFO_NULL); /* options/hints */
 
 
-
+#endif 
 #if 0
 
 /* Test fwrite */
@@ -90,6 +90,7 @@ int main ( int argc, char **argv)
 		      "foutfile.txt",  /* name for the resulting file */ 
                       MPI_INFO_NULL); /* options/hints */
 
+#endif
 /* Test MPI_Write */
   if ( mynode == 0 )
       LAT_mpi_write ( MPI_COMM_WORLD, /* communicator */
@@ -113,7 +114,6 @@ int main ( int argc, char **argv)
 		      "moutfile.txt",  /* name for the resulting file */ 
                       MPI_INFO_NULL); /* options/hints */
 
-#endif
 
   MPI_Finalize ();
   return ( 0 ) ;

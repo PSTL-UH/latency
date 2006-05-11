@@ -296,7 +296,7 @@ write_test_overlap:	write_test_overlap.o ../utils/eddhr.o  \
 		../utils/eddhr.o       \
 		../utils/utils.o       \
 		../utils/calc.o        \
-		../io/mpi_iwrite.o  $(LDFLAGS)
+		../io/mpi_iwrite.o  -lefence $(LDFLAGS)
 	mv write_test_overlap ../bin/
 
 clean:
