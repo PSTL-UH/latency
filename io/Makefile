@@ -1,13 +1,16 @@
 
 include ../Makefile.defs
 
-all: seq_write seq_fwrite mpi_write mpi_iwrite seq_read seq_fread mpi_read \
+all: seq_write aio_write seq_fwrite mpi_write mpi_iwrite seq_read seq_fread mpi_read \
 	mpi_iread
 
 
 # Two-sided operations
 seq_write: seq_write.h single_op.c ../include/latency.h ../utils/utils.c
 	$(CC) -c single_op.c -o seq_write.o -DSEQ_WRITE $(CFLAGS)
+
+aio_write: aio_write.h single_op.c ../include/latency.h ../utils/utils.c
+	$(CC) -c single_op.c -o aio_write.o -DAIO_WRITE $(CFLAGS)
 
 seq_fwrite: seq_fwrite.h single_op.c ../include/latency.h ../utils/utils.c
 	$(CC) -c single_op.c -o seq_fwrite.o -DSEQ_FWRITE $(CFLAGS)
