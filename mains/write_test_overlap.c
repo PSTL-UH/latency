@@ -27,7 +27,7 @@ int main ( int argc, char **argv)
                       1,             /* active process (yes/no) */
                       "sequential, datatype MPI_INT", 
                       NULL,           /* filename, NULL=stdout */
-		      "/data",         /* path for the resulting file */
+		      "/home/gabriel",         /* path for the resulting file */
 		      "outfile.txt",  /* name for the resulting file */ 
                       MPI_INFO_NULL); /* options/hints */
 
@@ -38,7 +38,7 @@ int main ( int argc, char **argv)
 		       0,             /* active process (yes/no) */
 		       "sequential, datatype MPI_INT", 
 		       NULL,           /* filename, NULL=stdout */
-		       "/data",         /* path for the resulting file */
+		       "/home/gabriel",         /* path for the resulting file */
 		       "outfile.txt",  /* name for the resulting file */ 
 		       MPI_INFO_NULL); /* options/hints */
   sync();
@@ -56,7 +56,7 @@ int main ( int argc, char **argv)
                       1,             /* active process (yes/no) */
                       "sequential, datatype MPI_INT", 
                       NULL,          /* filename, NULL=stdout */
-		      "/data",       /* path for the resulting file */
+		      "/home/gabriel",       /* path for the resulting file */
 		      "outfile.txt", /* name for the resulting file */ 
                       info  );       /* options/hints */
 
@@ -67,7 +67,7 @@ int main ( int argc, char **argv)
 		       0,             /* active process (yes/no) */
 		       "sequential, datatype MPI_INT", 
 		       NULL,          /* filename, NULL=stdout */
-		       "/data",       /* path for the resulting file */
+		       "/home/gabriel",       /* path for the resulting file */
 		       "outfile.txt", /* name for the resulting file */ 
 		       info);         /* options/hints */
 

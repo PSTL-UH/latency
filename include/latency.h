@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include "mpi.h"
 
+#include <aio.h>
+
 #include "latconfig.h"
 #include "lat_sys.h"
 

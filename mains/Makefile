@@ -282,8 +282,9 @@ write_test:	write_test.o ../utils/eddhr.o  \
 		../utils/utils.o       \
 		../utils/calc.o        \
 		../io/seq_write.o  \
+		../io/aio_write.o  \
 		../io/mpi_write.o  \
-		../io/seq_read.o   \
+		../io/mpi_iwrite.o  \
 		../io/seq_fwrite.o  $(LDFLAGS)
 	mv write_test ../bin/
 
@@ -296,7 +297,7 @@ write_test_overlap:	write_test_overlap.o ../utils/eddhr.o  \
 		../utils/eddhr.o       \
 		../utils/utils.o       \
 		../utils/calc.o        \
-		../io/mpi_iwrite.o  -lefence $(LDFLAGS)
+		../io/mpi_iwrite.o  $(LDFLAGS)
 	mv write_test_overlap ../bin/
 
 clean:
