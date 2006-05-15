@@ -282,6 +282,7 @@ write_test:	write_test.o ../utils/eddhr.o  \
 		../utils/utils.o       \
 		../utils/calc.o        \
 		../io/seq_write.o  \
+		../io/seq_writev.o  \
 		../io/seq_pwrite.o  \
 		../io/aio_write.o  \
 		../io/mpi_write.o  \

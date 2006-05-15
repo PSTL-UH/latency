@@ -4,6 +4,10 @@
 #include "seq_write.h"
 #endif
 
+#ifdef SEQ_WRITEV
+#include "seq_writev.h"
+#endif
+
 #ifdef SEQ_PWRITE
 #include "seq_pwrite.h"
 #endif
