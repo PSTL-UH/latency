@@ -43,6 +43,7 @@
                            MPI_INFO_NULL, &_fd);                 \
     if (_ret != MPI_SUCCESS ) MPI_Abort (MPI_COMM_WORLD, 1);     \
     free(_realpath);                                             \
+    _c.offset = 0;                                               \
 }
 
 #define LAT_FILE_METHODOLOGY_FIN_FN(_fd) {   \
