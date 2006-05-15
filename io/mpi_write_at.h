@@ -56,7 +56,7 @@
   MPI_Status _status;                         \
   MPI_File_write_at ( _obj, (MPI_Offset) _c.offset, _c.buf, \
                       _c.cnt, _c.dat, &_status); \
-  _c.offset += _c.cnt;                           \
+  _c.offset += _c.len;                           \
 } 
 
 #define LAT_FILE_MEASUREMENT_FIN_FN(_c, _obj) {}
