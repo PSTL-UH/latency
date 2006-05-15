@@ -24,6 +24,14 @@
 #include "mpi_write.h"
 #endif
 
+#ifdef MPI_WRITE_AT
+#include "mpi_write_at.h"
+#endif
+
+#ifdef MPI_WRITE_SHARED
+#include "mpi_write_shared.h"
+#endif
+
 #ifdef MPI_IWRITE
 #include "mpi_iwrite.h"
 #endif

@@ -27,8 +27,8 @@ int main ( int argc, char **argv)
 	printf("               4 : seq_pwrite\n");
 	printf("               5 : aio_write\n");
 	printf("               6 : MPI_File_write\n");
-	printf("             ( 7 : MPI_File_write_at )\n");
-	printf("             ( 8 : MPI_File_write_shared )\n");
+	printf("               7 : MPI_File_write_at \n");
+	printf("               8 : MPI_File_write_shared \n");
 	printf("               9 : MPI_File_iwrite\n");
 	printf("             (10 : MPI_File_iwrite_at )\n");
 	printf("             (11 : MPI_File_iwrite_shared )\n");
@@ -134,6 +134,28 @@ int main ( int argc, char **argv)
 			    path,           /* path for the resulting file */
 			    filename,       /* name for the resulting file */ 
 			    MPI_INFO_NULL); /* options/hints */
+	    break;
+	case 7:
+	    LAT_mpi_write_at ( MPI_COMM_WORLD, /* communicator */
+			       MPI_INT,        /* datatype */
+			       MAX_LEN/4,      /* max. count number */
+			       !(mynode),      /* active process (yes/no) */
+			       "sequential, datatype MPI_INT", 
+			       NULL,         /* filename, NULL=stdout */
+			       path,         /* path for the resulting file */
+			       filename,     /* name for the resulting file */ 
+			       MPI_INFO_NULL); /* options/hints */
+	    break;
+	case 8:
+	    LAT_mpi_write_shared ( MPI_COMM_WORLD, /* communicator */
+			       MPI_INT,        /* datatype */
+			       MAX_LEN/4,      /* max. count number */
+			       !(mynode),      /* active process (yes/no) */
+			       "sequential, datatype MPI_INT", 
+			       NULL,         /* filename, NULL=stdout */
+			       path,         /* path for the resulting file */
+			       filename,     /* name for the resulting file */ 
+			       MPI_INFO_NULL); /* options/hints */
 	    break;
 	case 9:
 	    LAT_mpi_iwrite ( MPI_COMM_WORLD, /* communicator */

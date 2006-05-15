@@ -2,7 +2,7 @@
 include ../Makefile.defs
 
 all: 	seq_write seq_writev seq_pwrite aio_write seq_fwrite \
-	mpi_write mpi_iwrite \
+	mpi_write mpi_write_at mpi_write_shared mpi_iwrite \
 	seq_read seq_fread \
 	mpi_read mpi_iread
 
@@ -25,6 +25,13 @@ seq_fwrite: seq_fwrite.h single_op.c ../include/latency.h ../utils/utils.c
 
 mpi_write: mpi_write.h single_op.c ../include/latency.h ../utils/utils.c
 	$(CC) -c single_op.c -o mpi_write.o -DMPI_WRITE $(CFLAGS)
+
+mpi_write_at: mpi_write_at.h single_op.c ../include/latency.h ../utils/utils.c
+	$(CC) -c single_op.c -o mpi_write_at.o -DMPI_WRITE_AT $(CFLAGS)
+
+mpi_write_shared: mpi_write_shared.h single_op.c ../include/latency.h \
+		../utils/utils.c
+	$(CC) -c single_op.c -o mpi_write_shared.o -DMPI_WRITE_SHARED $(CFLAGS)
 
 mpi_iwrite: mpi_iwrite.h single_op.c ../include/latency.h ../utils/utils.c
 	$(CC) -c single_op.c -o mpi_iwrite.o -DMPI_IWRITE $(CFLAGS)
