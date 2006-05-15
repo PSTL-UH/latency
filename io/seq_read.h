@@ -35,7 +35,7 @@
 #define LAT_FILE_MODE O_RDONLY
 
 /* Implementation of methodology specific initialization functions */
-#define LAT_FILE_METHODOLOGY_INIT_FN(_fd,_path,_filename,_mode){ \
+#define LAT_FILE_METHODOLOGY_INIT_FN(_fd,_path,_filename,_mode,_c){ \
     char *_realpath;                                             \
     asprintf(&_realpath,"%s/%s",_path,_filename);                \
     _fd = open (_realpath,_mode );                               \
@@ -49,12 +49,12 @@
 
 
 /* bandwidth measurement functions */
-#define LAT_FILE_MEASUREMENT_INIT_FN(_c) {    \
+#define LAT_FILE_MEASUREMENT_INIT_FN(_c, _obj) {    \
   long _a;                                    \
   char *_c_ptr = _c.buf;                      \
   size_t _num = _c.len ;                      \
   do {                                        \
-    _a = read ( _c.obj, _c_ptr, _num );      \
+    _a = read ( _obj, _c_ptr, _num );         \
     if ( _a == -1 ) {                         \
         if ( errno == EINTR ) continue;       \
     }	                                      \
@@ -64,6 +64,6 @@
 }
 
 
-#define LAT_FILE_MEASUREMENT_FIN_FN(_c) {}
+#define LAT_FILE_MEASUREMENT_FIN_FN(_c, _obj) {}
 
 #endif /* __LAT_SEQ_READ__ */

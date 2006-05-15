@@ -14,15 +14,16 @@
 MPI_Comm lat_user_comm;
 /*--------------------------------- Functions --------------------------------*/
 
-static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcount, MPI_Info info);
+static void LAT_FILE_MEASUREMENT (MPI_Datatype dat, int maxcount, MPI_Info info,
+				  char *path, char *testfile );
 
 static char *buf;
 
 struct LAT_file_object {
-    LAT_OBJTYPE       obj;
     char             *buf;
     int               cnt;
     int               len;
+    off_t          offset;
     MPI_Request       req;
     MPI_Datatype      dat;
 }; 
@@ -31,8 +32,6 @@ int LAT_FILE_METHODOLOGY (MPI_Comm comm, MPI_Datatype dat, int maxcount,
 			  int active, char *msg, char *filename, 
 			  char *path, char *testfile,  MPI_Info info )
 {
-    LAT_OBJTYPE obj;
-
     LAT_print_init ( filename, -1, comm, active );
     LAT_print_hostname ( active );
 
@@ -42,12 +41,9 @@ int LAT_FILE_METHODOLOGY (MPI_Comm comm, MPI_Datatype dat, int maxcount,
         LAT_print_status();
         LAT_print_description(msg, LAT_FILE_METHODOLOGY_STRING, info);
 
-	LAT_FILE_METHODOLOGY_INIT_FN(obj, path, testfile, LAT_FILE_MODE);
-
         LAT_print_bandinit ();
-        LAT_FILE_MEASUREMENT (obj, dat, maxcount, info);
+        LAT_FILE_MEASUREMENT ( dat, maxcount, info, path, testfile );
 
-	LAT_FILE_METHODOLOGY_FIN_FN(obj);
 	LAT_free_memory ( buf  );
     }
     
@@ -57,7 +53,9 @@ int LAT_FILE_METHODOLOGY (MPI_Comm comm, MPI_Datatype dat, int maxcount,
 }
 
 /*-------------------------------- BANDWIDTH ---------------------------------*/
-static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcount, MPI_Info info)
+static void LAT_FILE_MEASUREMENT ( MPI_Datatype dat, int maxcount, MPI_Info info, 
+				   char *path, char *testfile )
+
 { 
     double total_stime, total_etime;
     long totallength=0;
@@ -70,11 +68,15 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcoun
     MPI_Aint extent;
     EDDHR_head *eddhr_desc=NULL;
     struct LAT_file_object c;
+    LAT_OBJTYPE       obj;
 
     /* Options for the current run */
     int testresult=0;       /* default: no */
     int overlap=0;          /* default: no */
     int overlap_method=0;   /* adapt the problem size to transfer time */
+
+
+    LAT_FILE_METHODOLOGY_INIT_FN(obj, path, testfile, LAT_FILE_MODE, c);
 
     MPI_Type_size ( dat, &size );
     MPI_Type_extent ( dat, &extent );
@@ -84,7 +86,7 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcoun
 	CHECK_INFO_FOR_OVERLAP(info, overlap)
     }
 
-    c.obj = obj;
+
     c.buf = buf;
     c.dat = dat;
 
@@ -117,8 +119,8 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcoun
 	    totallength +=c.len*num_limit/1024;
             t1 =  MPI_Wtime();
             for ( i=0; i <num_limit; i++ ) {
-                LAT_FILE_MEASUREMENT_INIT_FN (c);
-                LAT_FILE_MEASUREMENT_FIN_FN (c);
+                LAT_FILE_MEASUREMENT_INIT_FN (c, obj );
+                LAT_FILE_MEASUREMENT_FIN_FN (c, obj );
             }
             t2 = MPI_Wtime();
             ttime  = t2 - t1;
@@ -130,8 +132,8 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcoun
 
 	totallength +=c.len/1024*(num_limit*band_limit);
         for (x=0; x<band_limit; x++) { 
-            LAT_FILE_MEASUREMENT_INIT_FN (c);
-            LAT_FILE_MEASUREMENT_FIN_FN (c);
+            LAT_FILE_MEASUREMENT_INIT_FN (c, obj);
+            LAT_FILE_MEASUREMENT_FIN_FN (c, obj);
             
             starttime = MPI_Wtime();
 	    for (i=0; i<num_limit; i++) {
@@ -139,11 +141,11 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcoun
                     EDDHR_cached_set_testdata (buf, cnt, dat, eddhr_desc);
                 }
 
-                LAT_FILE_MEASUREMENT_INIT_FN (c);
+                LAT_FILE_MEASUREMENT_INIT_FN ( c, obj );
 		if ( overlap ) {
 		    lat_calc_exec ( calclen );
 		}
-                LAT_FILE_MEASUREMENT_FIN_FN (c);
+                LAT_FILE_MEASUREMENT_FIN_FN ( c, obj );
 
 
                 if ( !LAT_WRITE && testresult ) {
@@ -185,6 +187,8 @@ static void LAT_FILE_MEASUREMENT (LAT_OBJTYPE obj, MPI_Datatype dat, int maxcoun
     if ( testresult ) {
         EDDHR_cached_free_description(&eddhr_desc);
     }
+
+     LAT_FILE_METHODOLOGY_FIN_FN( obj);
 
     return;
 }

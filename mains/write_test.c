@@ -24,7 +24,7 @@ int main ( int argc, char **argv)
 	printf("               1 : seq_write\n");
 	printf("               2 : seq_fwrite\n");
 	printf("             ( 3 : seq_writev )\n");
-	printf("             ( 4 : seq_pwrite )\n");
+	printf("               4 : seq_pwrite \n");
 	printf("               5 : aio_write\n");
 	printf("               6 : MPI_File_write\n");
 	printf("             ( 7 : MPI_File_write_at )\n");
@@ -82,6 +82,17 @@ int main ( int argc, char **argv)
 	    break;
 	case 2:
 	    LAT_seq_fwrite ( MPI_COMM_WORLD, /* communicator */
+			     MPI_INT,        /* datatype */
+			     MAX_LEN/4,      /* max. count number */
+			     !(mynode),      /* active process (yes/no) */
+			     "sequential, datatype MPI_INT", 
+			     NULL,           /* filename, NULL=stdout */
+			     path,           /* path for the resulting file */
+			     filename,       /* name for the resulting file */ 
+			     MPI_INFO_NULL); /* options/hints */
+	    break;
+	case 4:
+	    LAT_seq_pwrite ( MPI_COMM_WORLD, /* communicator */
 			     MPI_INT,        /* datatype */
 			     MAX_LEN/4,      /* max. count number */
 			     !(mynode),      /* active process (yes/no) */

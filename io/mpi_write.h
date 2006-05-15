@@ -35,7 +35,7 @@
 #define LAT_FILE_MODE  MPI_MODE_WRONLY|MPI_MODE_CREATE
 
 /* Implementation of methodology specific initialization functions */
-#define LAT_FILE_METHODOLOGY_INIT_FN(_fd,_path,_filename,_mode){ \
+#define LAT_FILE_METHODOLOGY_INIT_FN(_fd,_path,_filename,_mode,_c){ \
     char *_realpath;                                             \
     int _ret;                                                    \
     asprintf(&_realpath,"%s/%s",_path,_filename);                \
@@ -51,11 +51,11 @@
 
 
 /* bandwidth measurement functions */
-#define LAT_FILE_MEASUREMENT_INIT_FN(_c) {    \
+#define LAT_FILE_MEASUREMENT_INIT_FN(_c, _obj) {    \
   MPI_Status _status;                         \
-  MPI_File_write ( _c.obj, _c.buf, _c.cnt, _c.dat, &_status); \
+  MPI_File_write ( _obj, _c.buf, _c.cnt, _c.dat, &_status); \
 } 
 
-#define LAT_FILE_MEASUREMENT_FIN_FN(_c) {}
+#define LAT_FILE_MEASUREMENT_FIN_FN(_c, _obj) {}
 
 #endif /* __LAT_SEQ_WRITE__ */
