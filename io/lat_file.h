@@ -36,6 +36,15 @@
 #include "mpi_iwrite.h"
 #endif
 
+#ifdef MPI_IWRITE_AT
+#include "mpi_iwrite_at.h"
+#endif
+
+#ifdef MPI_IWRITE_SHARED
+#include "mpi_iwrite_shared.h"
+#endif
+
+
 #ifdef SEQ_READ
 #include "seq_read.h"
 #endif

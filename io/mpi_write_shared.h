@@ -38,8 +38,9 @@
 #define LAT_FILE_OPEN_FN(_c,_name,_mode){                   \
     int _ret;                                               \
     _ret = MPI_File_open ( MPI_COMM_SELF, _name, _mode,     \
-                           MPI_INFO_NULL, &_c.fd);          \
+                           _c.info, &_c.fd);                \
     if (_ret != MPI_SUCCESS ) MPI_Abort (MPI_COMM_WORLD, 1);\
+    MPI_File_set_view (_c.fd,0,_c.dat,_c.dat,"native",_c.info); \
 }
 
 #define LAT_FILE_CLOSE_FN(_c)  MPI_File_close(&_c.fd)

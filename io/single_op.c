@@ -27,6 +27,7 @@ struct LAT_file_object {
     off_t          offset;
     MPI_Request       req;
     MPI_Datatype      dat;
+    MPI_Info         info;
 }; 
 
 int LAT_FILE_METHODOLOGY (MPI_Comm comm, MPI_Datatype dat, int maxcount, 
@@ -77,6 +78,7 @@ static void LAT_FILE_MEASUREMENT ( MPI_Datatype dat, int maxcount, MPI_Info info
     int overlap=0;          /* default: no */
     int overlap_method=0;   /* adapt the problem size to transfer time */
 
+    c.info = info;
     asprintf(&realname,"%s/%s",path,testfile);
     LAT_FILE_OPEN_FN(c, realname, LAT_FILE_MODE);
     free (realname);

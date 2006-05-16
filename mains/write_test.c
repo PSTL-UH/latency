@@ -17,10 +17,12 @@ int main ( int argc, char **argv)
   MPI_Comm_rank ( MPI_COMM_WORLD, &mynode );
 
    if ( argc == 1 ) {
-        printf("Usage:mpirun -np 2 ./write_test -m <mode> -f <filename> -p <path> \n");
+        printf("Usage: mpirun -np 1 ./write_test -m <mode> -f <filename> "
+	       "-p <path> \n");
         printf("\n");
         printf("   with: \n");
-        printf("    -m <mode>    : write using a certain mode, mode being (default: 1) \n");
+        printf("    -m <mode>    : write using a certain mode, mode being "
+	       "(default: 1) \n");
 	printf("               1 : seq_write\n");
 	printf("               2 : seq_fwrite\n");
 	printf("               3 : seq_writev\n");
@@ -30,11 +32,13 @@ int main ( int argc, char **argv)
 	printf("               7 : MPI_File_write_at \n");
 	printf("               8 : MPI_File_write_shared \n");
 	printf("               9 : MPI_File_iwrite\n");
-	printf("             (10 : MPI_File_iwrite_at )\n");
-	printf("             (11 : MPI_File_iwrite_shared )\n");
+	printf("              10 : MPI_File_iwrite_at\n");
+	printf("              11 : MPI_File_iwrite_shared \n");
 
-        printf("    -f <filename>: name of resulting file (default: outfile.txt) \n");
-        printf("    -p <path>    : path where to write file <filename> (default: cwd) \n");
+        printf("    -f <filename>: name of resulting file (default: "
+	       "outfile.txt) \n");
+        printf("    -p <path>    : path where to write file <filename> "
+	       "(default: cwd) \n");
         exit(1);
     }
 
@@ -48,7 +52,7 @@ int main ( int argc, char **argv)
             filename = strdup (argv[++j]);
             continue;
         }
-        else if( !strcmp ( argv[j], "-o")) {
+        else if( !strcmp ( argv[j], "-p")) {
             path = strdup (argv[++j]);
             continue;
 	}
@@ -168,8 +172,31 @@ int main ( int argc, char **argv)
 			     filename,       /* name for the resulting file */ 
 			     MPI_INFO_NULL); /* options/hints */
 	    break;
+	case 10:
+	    LAT_mpi_iwrite_at ( MPI_COMM_WORLD, /* communicator */
+			     MPI_INT,        /* datatype */
+			     MAX_LEN/4,      /* max. count number */
+			     !(mynode),      /* active process (yes/no) */
+			     "sequential, datatype MPI_INT", 
+			     NULL,           /* filename, NULL=stdout */
+			     path,           /* path for the resulting file */
+			     filename,       /* name for the resulting file */ 
+			     MPI_INFO_NULL); /* options/hints */
+	    break;
+	case 11:
+	    LAT_mpi_iwrite_shared ( MPI_COMM_WORLD, /* communicator */
+			     MPI_INT,        /* datatype */
+			     MAX_LEN/4,      /* max. count number */
+			     !(mynode),      /* active process (yes/no) */
+			     "sequential, datatype MPI_INT", 
+			     NULL,           /* filename, NULL=stdout */
+			     path,           /* path for the resulting file */
+			     filename,       /* name for the resulting file */ 
+			     MPI_INFO_NULL); /* options/hints */
+	    break;
+
 	default:
-	    printf("Method not yet implemented\n");
+	    printf("Unknown file write mode\n");
 	    MPI_Abort ( MPI_COMM_WORLD, 1 );
 	    break;
     }

@@ -1,11 +1,11 @@
-#ifndef __LAT_MPI_IWRITE__
-#define __LAT_MPI_IWRITE__
+#ifndef __LAT_MPI_IWRITE_AT__
+#define __LAT_MPI_IWRITE_AT__
 
 /* Public interface */
 #define LAT_FD      MPI_File
 
-#define LAT_FILE_METHODOLOGY_STRING "MPI_File_iwrite()/MPI_Wait()"
-#define LAT_FILE_METHODOLOGY        LAT_mpi_iwrite
+#define LAT_FILE_METHODOLOGY_STRING "MPI_File_iwrite_at()/MPI_Wait()"
+#define LAT_FILE_METHODOLOGY        LAT_mpi_iwrite_at
 
 /* set for methods doing simplex data transfer to 1, 
    set for methods doing duplex data transfer  to 2 */
@@ -26,7 +26,7 @@
 #define LAT_TIME_FACTOR     1
 
 /* internal interfaces */
-#define LAT_FILE_MEASUREMENT       LAT_mpi_iwrite_test
+#define LAT_FILE_MEASUREMENT       LAT_mpi_iwrite_at_test
 
 /* define whether we are reading or writing */
 #define LAT_WRITE 1
@@ -41,17 +41,19 @@
                            _c.info, &_c.fd);                 \
     if (_ret != MPI_SUCCESS ) MPI_Abort (MPI_COMM_WORLD, 1); \
     MPI_File_set_view (_c.fd,0,_c.dat,_c.dat,"native",_c.info); \
+    _c.offset=0;                                             \
 }
 
 #define LAT_FILE_CLOSE_FN(_c) MPI_File_close(&_c.fd)
 #define LAT_FILE_SYNC_FN(_c) MPI_File_sync (_c.fd)
 
 /* bandwidth measurement functions */
-#define LAT_FILE_MEASUREMENT_INIT_FN(_c) MPI_File_iwrite(_c.fd,_c.buf,_c.cnt,_c.dat,&_c.req)
+#define LAT_FILE_MEASUREMENT_INIT_FN(_c) MPI_File_iwrite_at(_c.fd, (MPI_Offset) _c.offset,_c.buf,_c.cnt,_c.dat,&_c.req)
 
 #define LAT_FILE_MEASUREMENT_FIN_FN(_c ) {\
   MPI_Status _status;                     \
   MPI_Wait(&(_c.req),&_status);           \
+  _c.offset += _c.len;                    \
 }
 
 #endif /* __LAT_MPI_IWRITE__ */
