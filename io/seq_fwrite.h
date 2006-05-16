@@ -2,7 +2,7 @@
 #define __LAT_SEQ_FWRITE__
 
 /* Public interface */
-#define LAT_OBJTYPE      FILE*
+#define LAT_FD      FILE*
 
 #define LAT_FILE_METHODOLOGY_STRING "sequential fwrite()"
 #define LAT_FILE_METHODOLOGY        LAT_seq_fwrite
@@ -35,32 +35,27 @@
 #define LAT_FILE_MODE "w"
 
 /* Implementation of methodology specific initialization functions */
-#define LAT_FILE_METHODOLOGY_INIT_FN(_fd,_path,_filename,_mode,_c){ \
-    char *_realpath;                                             \
-    asprintf(&_realpath,"%s/%s",_path,_filename);                \
-    _fd = fopen (_realpath,_mode);                               \
-    if (_fd == NULL ) MPI_Abort (MPI_COMM_WORLD, 1);             \
-    free(_realpath);                                             \
+#define LAT_FILE_OPEN_FN(_c,_name,_mode){             \
+    _c.fd = fopen (_name,_mode);                      \
+    if (_c.fd == NULL ) MPI_Abort (MPI_COMM_WORLD, 1);\
 }
 
-#define LAT_FILE_METHODOLOGY_FIN_FN(_fd) {   \
-   fclose(_fd);                             \
-}                  
-
+#define LAT_FILE_CLOSE_FN(_c) fclose(_c.fd)
+#define LAT_FILE_SYNC_FN(_c) fflush(_c.fd)
 
 /* bandwidth measurement functions */
-#define LAT_FILE_MEASUREMENT_INIT_FN(_c, _obj) {    \
-  size_t _a;                                  \
-  char *_c_ptr = _c.buf;                      \
-  size_t _num = _c.len ;                      \
-  do {                                        \
-    _a = fwrite ( _c_ptr, 1, _num, _obj); \
-    _num   -= _a;                             \
-    _c_ptr += _a;                             \
-  }  while ( _num > 0 );                      \
+#define LAT_FILE_MEASUREMENT_INIT_FN(_c) {  \
+  size_t _a;                                \
+  char *_c_ptr = _c.buf;                    \
+  size_t _num = _c.len ;                    \
+  do {                                      \
+    _a = fwrite ( _c_ptr, 1, _num, _c.fd);  \
+    _num   -= _a;                           \
+    _c_ptr += _a;                           \
+  }  while ( _num > 0 );                    \
 }
 
 
-#define LAT_FILE_MEASUREMENT_FIN_FN(_c, _obj) {}
+#define LAT_FILE_MEASUREMENT_FIN_FN(_c)
 
 #endif /* __LAT_SEQ_FWRITE__ */

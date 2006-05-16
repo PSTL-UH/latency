@@ -2,7 +2,7 @@
 #define __LAT_MPI_IREAD__
 
 /* Public interface */
-#define LAT_OBJTYPE      MPI_File
+#define LAT_FD      MPI_File
 
 #define LAT_FILE_METHODOLOGY_STRING "MPI_File_iread()/MPI_Wait()"
 #define LAT_FILE_METHODOLOGY        LAT_mpi_iread
@@ -35,29 +35,22 @@
 #define LAT_FILE_MODE  MPI_MODE_RDONLY
 
 /* Implementation of methodology specific initialization functions */
-#define LAT_FILE_METHODOLOGY_INIT_FN(_fd,_path,_filename,_mode,_c){ \
-    char *_realpath;                                             \
-    int _ret;                                                    \
-    asprintf(&_realpath,"%s/%s",_path,_filename);                \
-    _ret = MPI_File_open ( MPI_COMM_SELF, _realpath, _mode,      \
-                           MPI_INFO_NULL, &_fd);                 \
-    if (_ret != MPI_SUCCESS ) MPI_Abort (MPI_COMM_WORLD, 1);     \
-    free(_realpath);                                             \
+#define LAT_FILE_OPEN_FN(_c,_name,_mode){                    \
+    int _ret;                                                \
+    _ret = MPI_File_open ( MPI_COMM_SELF, _name, _mode,      \
+                           MPI_INFO_NULL, &_c.fd);           \
+    if (_ret != MPI_SUCCESS ) MPI_Abort (MPI_COMM_WORLD, 1); \
 }
 
-#define LAT_FILE_METHODOLOGY_FIN_FN(_fd) {   \
-    MPI_File_close(&_fd);                    \
-}                  
-
+#define LAT_FILE_CLOSE_FN(_c)  MPI_File_close(&_c.fd)
+#define LAT_FILE_SYNC_FN(_c)  MPI_File_sync( _c.fd)
 
 /* bandwidth measurement functions */
-#define LAT_FILE_MEASUREMENT_INIT_FN(_c, _obj) {    \
-  MPI_File_iread ( _obj, _c.buf, _c.cnt, _c.dat, &_c.req); \
-} 
+#define LAT_FILE_MEASUREMENT_INIT_FN(_c) MPI_File_iread(_c.fd,_c.buf,_c.cnt,_c.dat,&_c.req)
 
-#define LAT_FILE_MEASUREMENT_FIN_FN(_c, _obj) {\
+#define LAT_FILE_MEASUREMENT_FIN_FN(_c) {\
   MPI_Status _status;                    \
   MPI_Wait(&_c.req,&_status);            \
 }
 
-#endif /* __LAT_SEQ_IREAD__ */
+#endif /* __LAT_MPI_IREAD__ */

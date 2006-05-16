@@ -20,6 +20,7 @@ static void LAT_FILE_MEASUREMENT (MPI_Datatype dat, int maxcount, MPI_Info info,
 static char *buf;
 
 struct LAT_file_object {
+    LAT_FD             fd;
     char             *buf;
     int               cnt;
     int               len;
@@ -68,15 +69,17 @@ static void LAT_FILE_MEASUREMENT ( MPI_Datatype dat, int maxcount, MPI_Info info
     MPI_Aint extent;
     EDDHR_head *eddhr_desc=NULL;
     struct LAT_file_object c;
-    LAT_OBJTYPE       obj;
+    char *realname;
+
 
     /* Options for the current run */
     int testresult=0;       /* default: no */
     int overlap=0;          /* default: no */
     int overlap_method=0;   /* adapt the problem size to transfer time */
 
-
-    LAT_FILE_METHODOLOGY_INIT_FN(obj, path, testfile, LAT_FILE_MODE, c);
+    asprintf(&realname,"%s/%s",path,testfile);
+    LAT_FILE_OPEN_FN(c, realname, LAT_FILE_MODE);
+    free (realname);
 
     MPI_Type_size ( dat, &size );
     MPI_Type_extent ( dat, &extent );
@@ -119,8 +122,8 @@ static void LAT_FILE_MEASUREMENT ( MPI_Datatype dat, int maxcount, MPI_Info info
 	    totallength +=c.len*num_limit/1024;
             t1 =  MPI_Wtime();
             for ( i=0; i <num_limit; i++ ) {
-                LAT_FILE_MEASUREMENT_INIT_FN (c, obj );
-                LAT_FILE_MEASUREMENT_FIN_FN (c, obj );
+                LAT_FILE_MEASUREMENT_INIT_FN (c);
+                LAT_FILE_MEASUREMENT_FIN_FN (c);
             }
             t2 = MPI_Wtime();
             ttime  = t2 - t1;
@@ -132,8 +135,6 @@ static void LAT_FILE_MEASUREMENT ( MPI_Datatype dat, int maxcount, MPI_Info info
 
 	totallength +=c.len/1024*(num_limit*band_limit);
         for (x=0; x<band_limit; x++) { 
-            LAT_FILE_MEASUREMENT_INIT_FN (c, obj);
-            LAT_FILE_MEASUREMENT_FIN_FN (c, obj);
             
             starttime = MPI_Wtime();
 	    for (i=0; i<num_limit; i++) {
@@ -141,11 +142,11 @@ static void LAT_FILE_MEASUREMENT ( MPI_Datatype dat, int maxcount, MPI_Info info
                     EDDHR_cached_set_testdata (buf, cnt, dat, eddhr_desc);
                 }
 
-                LAT_FILE_MEASUREMENT_INIT_FN ( c, obj );
+                LAT_FILE_MEASUREMENT_INIT_FN(c);
 		if ( overlap ) {
 		    lat_calc_exec ( calclen );
 		}
-                LAT_FILE_MEASUREMENT_FIN_FN ( c, obj );
+                LAT_FILE_MEASUREMENT_FIN_FN(c);
 
 
                 if ( !LAT_WRITE && testresult ) {
@@ -180,7 +181,14 @@ static void LAT_FILE_MEASUREMENT ( MPI_Datatype dat, int maxcount, MPI_Info info
         LAT_print_band(LAT_FACTOR*cnt*size, s_time,max/num_limit, min/num_limit, E/s_m, 
 		       calclen );
     }
+    LAT_FILE_SYNC_FN(c);
     total_etime = MPI_Wtime();
+
+    /* Convert kb into MB */
+    totallength /= 1024;
+
+    /* Output total summary */
+    LAT_print("\n\n");
     LAT_print("Total amount of data %ld, total time %lf, avg. bandwidth %lf\n", 
 	      totallength, (total_etime-total_stime), totallength/(total_etime-total_stime));
 
@@ -188,7 +196,7 @@ static void LAT_FILE_MEASUREMENT ( MPI_Datatype dat, int maxcount, MPI_Info info
         EDDHR_cached_free_description(&eddhr_desc);
     }
 
-     LAT_FILE_METHODOLOGY_FIN_FN( obj);
+     LAT_FILE_CLOSE_FN(c);
 
     return;
 }

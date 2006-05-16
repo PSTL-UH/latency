@@ -2,7 +2,7 @@
 #define __LAT_AIO_WRITE__
 
 /* Public interface */
-#define LAT_OBJTYPE      struct aiocb
+#define LAT_FD      struct aiocb
 
 #define LAT_FILE_METHODOLOGY_STRING "aio_write()"
 #define LAT_FILE_METHODOLOGY        LAT_aio_write
@@ -35,30 +35,24 @@
 #define LAT_FILE_MODE O_CREAT|O_WRONLY
 
 /* Implementation of methodology specific initialization functions */
-#define LAT_FILE_METHODOLOGY_INIT_FN(_fd,_path,_filename,_mode,_c){ \
-    char *_realpath;                                             \
-    int _fp;                                                     \
-    asprintf(&_realpath,"%s/%s",_path,_filename);                \
-    _fp = open (_realpath,_mode,0644);                           \
-    if (_fp == -1 ) MPI_Abort (MPI_COMM_WORLD, 1);               \
-    free(_realpath);                                             \
-    _fd.aio_fildes = _fp;                                        \
-    _fd.aio_reqprio = 0;                                         \
-    _fd.aio_sigevent.sigev_notify = SIGEV_NONE;                  \
-    _fd.aio_offset = 0;                                          \
+#define LAT_FILE_OPEN_FN(_c,_name,_mode){                        \
+    _c.fd.aio_fildes = open (_name,_mode,0644);                  \
+    if (_c.fd.aio_fildes == -1 ) MPI_Abort (MPI_COMM_WORLD, 1);  \
+    _c.fd.aio_reqprio = 0;                                       \
+    _c.fd.aio_sigevent.sigev_notify = SIGEV_NONE;                \
+    _c.fd.aio_offset = 0;                                        \
 }
 
-#define LAT_FILE_METHODOLOGY_FIN_FN(_fd) {   \
-    close( _fd.aio_fildes);                   \
-}                  
+#define LAT_FILE_CLOSE_FN(_c) close( _c.fd.aio_fildes)
+#define LAT_FILE_SYNC_FN(_c) fsync(_c.fd.aio_fildes)
 
 
 /* bandwidth measurement functions */
-#define LAT_FILE_MEASUREMENT_INIT_FN(_c, _obj) {    \
+#define LAT_FILE_MEASUREMENT_INIT_FN(_c ) {   \
   int _ret;                                   \
-  _obj.aio_nbytes = _c.len;                   \
-  _obj.aio_buf    = _c.buf;                   \
-  _ret = aio_write ( &_obj );                 \
+  _c.fd.aio_nbytes = _c.len;                  \
+  _c.fd.aio_buf    = _c.buf;                  \
+  _ret = aio_write ( &(_c.fd) );              \
   if (_ret != 0 ){                            \
     perror ( "aio_write");                    \
     MPI_Abort ( MPI_COMM_WORLD, 1 );          \
@@ -66,17 +60,17 @@
 }   
 
 
-#define LAT_FILE_MEASUREMENT_FIN_FN(_c, _obj ) {             \
+#define LAT_FILE_MEASUREMENT_FIN_FN(_c ) {                   \
   int _ret, _bread;                                          \
   do {                                                       \
-     while ( (_ret=aio_error (&_obj ) == EINPROGRESS ));     \
-     _bread = aio_return ( &_obj );                          \
-     _obj.aio_buf = ((char *)(_obj.aio_buf)) + _bread;       \
-     _obj.aio_offset += _bread;                              \
-     _obj.aio_nbytes -= _bread;                              \
-      if ( _obj.aio_nbytes > 0 )                             \
-	    _ret = aio_write ( &_obj );                      \
-  } while ( _obj.aio_nbytes > 0 );                           \
+     while ( (_ret=aio_error (&(_c.fd) ) == EINPROGRESS ));  \
+     _bread = aio_return ( &(_c.fd) );                       \
+     _c.fd.aio_buf = ((char *)(_c.fd.aio_buf)) + _bread;     \
+     _c.fd.aio_offset += _bread;                             \
+     _c.fd.aio_nbytes -= _bread;                             \
+      if ( _c.fd.aio_nbytes > 0 )                            \
+	    _ret = aio_write ( &(_c.fd) );                   \
+  } while ( _c.fd.aio_nbytes > 0 );                          \
 }
 
 #endif /* __LAT_AIO_WRITE__ */
