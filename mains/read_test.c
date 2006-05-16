@@ -6,7 +6,7 @@
 #include <string.h>
 
 static void check_input_file (char *path, char *filename, MPI_Datatype dat,
-			      int maxlen)
+			      int maxlen);
 
 
 int main ( int argc, char **argv)
@@ -228,9 +228,9 @@ static void check_input_file (char *path, char *filename, MPI_Datatype dat,
   char *realname;
 
   MPI_Comm_rank ( MPI_COMM_WORLD, &rank );
-  asprintf(&realname, "%s/%s/", path, filename);
+  asprintf(&realname, "%s/%s", path, filename);
 
-  fd = open ( "/data/outfile.txt", O_RDONLY );
+  fd = open ( realname, O_RDONLY );
   if ( fd == -1 ) {
       /* We need to write a file first to make sure that we have something to 
 	 read! */
