@@ -297,14 +297,68 @@ write_test:	write_test.o ../utils/eddhr.o  \
 write_test_overlap.o:	write_test_overlap.c ../include/latency.h
 	$(CC) -c write_test_overlap.c $(CFLAGS)
 write_test_overlap:	write_test_overlap.o ../utils/eddhr.o  \
-	../utils/calc.o ../utils/utils.o       \
-	../io/mpi_iwrite.o 
+	../utils/calc.o ../utils/utils.o 
 	$(CC) -o write_test_overlap write_test_overlap.o \
 		../utils/eddhr.o       \
 		../utils/utils.o       \
 		../utils/calc.o        \
-		../io/mpi_iwrite.o  $(LDFLAGS)
+		../io/seq_write.o  \
+		../io/seq_writev.o  \
+		../io/seq_pwrite.o  \
+		../io/aio_write.o  \
+		../io/mpi_write.o  \
+		../io/mpi_write_at.o  \
+		../io/mpi_write_shared.o  \
+		../io/mpi_iwrite.o  \
+		../io/mpi_iwrite_at.o  \
+		../io/mpi_iwrite_shared.o  \
+		../io/seq_fwrite.o  $(LDFLAGS)
 	mv write_test_overlap ../bin/
+
+
+read_test.o:	read_test.c ../include/latency.h
+	$(CC) -c read_test.c $(CFLAGS)
+read_test:	read_test.o ../utils/eddhr.o  \
+	../utils/calc.o ../utils/utils.o       \
+	../io/seq_read.o ../io/seq_fread.o \
+	../io/mpi_read.o ../io/seq_read.o
+	$(CC) -o read_test read_test.o \
+		../utils/eddhr.o       \
+		../utils/utils.o       \
+		../utils/calc.o        \
+		../io/seq_read.o  \
+		../io/seq_readv.o  \
+		../io/seq_pread.o  \
+		../io/aio_read.o  \
+		../io/mpi_read.o  \
+		../io/mpi_read_at.o  \
+		../io/mpi_read_shared.o  \
+		../io/mpi_iread.o  \
+		../io/mpi_iread_at.o  \
+		../io/mpi_iread_shared.o  \
+		../io/seq_fread.o  $(LDFLAGS)
+	mv read_test ../bin/
+
+read_test_overlap.o:	read_test_overlap.c ../include/latency.h
+	$(CC) -c read_test_overlap.c $(CFLAGS)
+read_test_overlap:	read_test_overlap.o ../utils/eddhr.o  \
+	../utils/calc.o ../utils/utils.o 
+	$(CC) -o read_test_overlap read_test_overlap.o \
+		../utils/eddhr.o       \
+		../utils/utils.o       \
+		../utils/calc.o        \
+		../io/seq_read.o  \
+		../io/seq_readv.o  \
+		../io/seq_pread.o  \
+		../io/aio_read.o  \
+		../io/mpi_read.o  \
+		../io/mpi_read_at.o  \
+		../io/mpi_read_shared.o  \
+		../io/mpi_iread.o  \
+		../io/mpi_iread_at.o  \
+		../io/mpi_iread_shared.o  \
+		../io/seq_fread.o  $(LDFLAGS)
+	mv read_test_overlap ../bin/
 
 clean:
 	rm -f *.o *~ 

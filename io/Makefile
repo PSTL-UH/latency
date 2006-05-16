@@ -4,11 +4,12 @@ include ../Makefile.defs
 all: 	seq_write seq_writev seq_pwrite aio_write seq_fwrite \
 	mpi_write mpi_write_at mpi_write_shared \
         mpi_iwrite mpi_iwrite_at mpi_iwrite_shared \
-	seq_read seq_fread \
-	mpi_read mpi_iread
+	seq_read seq_readv seq_pread aio_read seq_fread \
+	mpi_read mpi_read_at mpi_read_shared \
+	mpi_iread mpi_iread_at mpi_iread_shared
 
 
-# Two-sided operations
+# write  operations
 seq_write: seq_write.h single_op.c ../include/latency.h ../utils/utils.c
 	$(CC) -c single_op.c -o seq_write.o -DSEQ_WRITE $(CFLAGS)
 
@@ -44,17 +45,41 @@ mpi_iwrite_shared: mpi_iwrite_shared.h single_op.c ../include/latency.h \
 		../utils/utils.c
 	$(CC) -c single_op.c -o mpi_iwrite_shared.o -DMPI_IWRITE_SHARED $(CFLAGS)
 
+# read  operations
 seq_read: seq_read.h single_op.c ../include/latency.h ../utils/utils.c
 	$(CC) -c single_op.c -o seq_read.o -DSEQ_READ $(CFLAGS)
 
 seq_fread: seq_fread.h single_op.c ../include/latency.h ../utils/utils.c
 	$(CC) -c single_op.c -o seq_fread.o -DSEQ_FREAD $(CFLAGS)
 
+seq_readv: seq_readv.h single_op.c ../include/latency.h ../utils/utils.c
+	$(CC) -c single_op.c -o seq_readv.o -DSEQ_READV $(CFLAGS)
+
+seq_pread: seq_pread.h single_op.c ../include/latency.h ../utils/utils.c
+	$(CC) -c single_op.c -o seq_pread.o -DSEQ_PREAD $(CFLAGS)
+
+aio_read: aio_read.h single_op.c ../include/latency.h ../utils/utils.c
+	$(CC) -c single_op.c -o aio_read.o -DAIO_READ $(CFLAGS)
+
 mpi_read: mpi_read.h single_op.c ../include/latency.h ../utils/utils.c
 	$(CC) -c single_op.c -o mpi_read.o -DMPI_READ $(CFLAGS)
 
+mpi_read_at: mpi_read_at.h single_op.c ../include/latency.h ../utils/utils.c
+	$(CC) -c single_op.c -o mpi_read_at.o -DMPI_READ_AT $(CFLAGS)
+
+mpi_read_shared: mpi_read_shared.h single_op.c ../include/latency.h \
+		../utils/utils.c
+	$(CC) -c single_op.c -o mpi_read_shared.o -DMPI_READ_SHARED $(CFLAGS)
+
 mpi_iread: mpi_iread.h single_op.c ../include/latency.h ../utils/utils.c
 	$(CC) -c single_op.c -o mpi_iread.o -DMPI_IREAD $(CFLAGS)
+
+mpi_iread_at: mpi_iread_at.h single_op.c ../include/latency.h ../utils/utils.c
+	$(CC) -c single_op.c -o mpi_iread_at.o -DMPI_IREAD_AT $(CFLAGS)
+
+mpi_iread_shared: mpi_iread_shared.h single_op.c ../include/latency.h \
+		../utils/utils.c
+	$(CC) -c single_op.c -o mpi_iread_shared.o -DMPI_IREAD_SHARED $(CFLAGS)
 
 clean:
 	rm -f *.o *~ 
