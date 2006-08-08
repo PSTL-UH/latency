@@ -3,7 +3,7 @@ include ../Makefile.defs
 
 all: basic basic-info basictoall allbasictypes alltransfer alldertypes \
 	spawn connect onesided onesided-multiseg onesided-alldertypes \
-	duplex join
+	duplex join group_excl_next_elt
 
 nompi2: basic basictoall allbasictypes alltransfer alldertypes 
 io:	write_test write_test_overlap read_test read_test_overlap
@@ -19,6 +19,18 @@ basic: basic.o ../utils/utils.o ../utils/eddhr.o ../utils/calc.o \
 		../utils/eddhr.o ../utils/calc.o        \
 		../utils/utils.o $(LDFLAGS)
 	mv basic $(BIN_DIR)
+
+
+group_excl_next_elt.o: group_excl_next_elt.c ../include/latency.h 
+	$(CC) -c group_excl_next_elt.c $(CFLAGS)
+
+group_excl_next_elt: group_excl_next_elt.o ../utils/utils.o ../utils/eddhr.o ../utils/calc.o \
+		../transfer/send_recv.o 
+	$(CC) -o group_excl_next_elt group_excl_next_elt.o $(CFLAGS)  \
+		../transfer/send_recv.o \
+		../utils/eddhr.o ../utils/calc.o        \
+		../utils/utils.o $(LDFLAGS)
+	mv group_excl_next_elt $(BIN_DIR)
 
 basic-info.o: basic-info.c ../include/latency.h 
 	$(CC) -c basic-info.c $(CFLAGS)
