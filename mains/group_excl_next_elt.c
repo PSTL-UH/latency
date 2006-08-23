@@ -13,7 +13,7 @@ int main( int argc, char *argv[] )
   int *ranks, n, rank, size,i,j,k,num_groups;
   MPI_Group *group;
   MPI_Comm *commList;
-  char *commName,*message; 
+  char *commName, *message; 
 
   MPI_Init ( &argc, &argv );
   comm = MPI_COMM_WORLD;
@@ -32,11 +32,14 @@ int main( int argc, char *argv[] )
     else 
       k = k/2 + 1;
   }
-  group = (MPI_Group *)malloc(num_groups * (sizeof(MPI_Group)) );
+
+  group = (MPI_Group *)malloc(num_groups * (sizeof(MPI_Group)) ); 
   commList = (MPI_Comm *)malloc(num_groups * (sizeof(MPI_Comm)) );
-  old_ranks = (int *)malloc(num_groups* (sizeof(int)));
-  commName = (char *)malloc(5*sizeof(char));
-  message = (char *)malloc(24*sizeof(char));
+
+  old_ranks = (int *)malloc(num_groups* (sizeof(int))); 
+  commName = (char *)malloc(8*sizeof(char));
+  message = (char *)malloc(32*sizeof(char));
+
 
   sprintf(commName,"%s%d","Comm",0);
   sprintf(message,"%s%s",commName,", datatype MPI_Byte");
@@ -44,7 +47,7 @@ int main( int argc, char *argv[] )
   commList[0] = MPI_COMM_WORLD;
   MPI_Comm_group ( comm, &group[0] );
 
-  if ( rank == 0 )
+  if ( rank == 0 ) {
       LAT_send_recv ( commList[0],    /* communicator */
 		      MPI_BYTE,       /* datatype */
 		      MAX_LEN,        /* max. count number */
@@ -53,8 +56,9 @@ int main( int argc, char *argv[] )
 		      message, 
 		      NULL,       /* filename, NULL=stdout */
 		      MPI_INFO_NULL); /* options/hints */
+  }
 	  
-  if ( rank == 1 )
+  if ( rank == 1 ) {
       LAT_send_recv ( commList[0],    /* communicator */
 		      MPI_BYTE,       /* datatype */
 		      MAX_LEN,        /* max. count number */
@@ -63,6 +67,7 @@ int main( int argc, char *argv[] )
 		      message, 
 		      NULL,       /* filename, NULL=stdout */
 		      MPI_INFO_NULL); /* options/hints */
+  }
   free(commName);
   free(message);
 
