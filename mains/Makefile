@@ -3,7 +3,7 @@ include ../Makefile.defs
 
 all: basic basic-info basictoall allbasictypes alltransfer alldertypes \
 	spawn connect onesided onesided-multiseg onesided-alldertypes \
-	duplex join group_excl_next_elt
+	duplex join group_excl_next_elt comm_cid_test1 comm_cid_test2
 
 nompi2: basic basictoall allbasictypes alltransfer alldertypes 
 io:	write_test write_test_overlap read_test read_test_overlap
@@ -31,6 +31,28 @@ group_excl_next_elt: group_excl_next_elt.o ../utils/utils.o ../utils/eddhr.o ../
 		../utils/eddhr.o ../utils/calc.o        \
 		../utils/utils.o $(LDFLAGS)
 	mv group_excl_next_elt $(BIN_DIR)
+
+comm_cid_test2.o: comm_cid_test2.c ../include/latency.h 
+	$(CC) -c comm_cid_test2.c $(CFLAGS)
+
+comm_cid_test2: comm_cid_test2.o ../utils/utils.o ../utils/eddhr.o ../utils/calc.o \
+		../transfer/send_recv.o 
+	$(CC) -o comm_cid_test2 comm_cid_test2.o $(CFLAGS)  \
+		../transfer/send_recv.o \
+		../utils/eddhr.o ../utils/calc.o        \
+		../utils/utils.o $(LDFLAGS)
+	mv comm_cid_test2 $(BIN_DIR)
+
+comm_cid_test1.o: comm_cid_test1.c ../include/latency.h 
+	$(CC) -c comm_cid_test1.c $(CFLAGS)
+
+comm_cid_test1: comm_cid_test1.o ../utils/utils.o ../utils/eddhr.o ../utils/calc.o \
+		../transfer/send_recv.o 
+	$(CC) -o comm_cid_test1 comm_cid_test1.o $(CFLAGS)  \
+		../transfer/send_recv.o \
+		../utils/eddhr.o ../utils/calc.o        \
+		../utils/utils.o $(LDFLAGS)
+	mv comm_cid_test1 $(BIN_DIR)
 
 basic-info.o: basic-info.c ../include/latency.h 
 	$(CC) -c basic-info.c $(CFLAGS)
