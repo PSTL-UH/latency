@@ -54,7 +54,7 @@ int main( int argc, char *argv[] )
 		      1,              /* communication partner */
 		      1,              /* sender flag (yes/no) */
 		      message, 
-		      NULL,       /* filename, NULL=stdout */
+		      commName,       /* filename, NULL=stdout */
 		      MPI_INFO_NULL); /* options/hints */
   }
 	  
@@ -65,7 +65,7 @@ int main( int argc, char *argv[] )
 		      0,              /* communication partner */
 		      0,              /* sender flag (yes/no) */
 		      message, 
-		      NULL,       /* filename, NULL=stdout */
+		      commName,       /* filename, NULL=stdout */
 		      MPI_INFO_NULL); /* options/hints */
   }
   free(commName);
@@ -126,7 +126,7 @@ int main( int argc, char *argv[] )
 			      1,              /* communication partner */
 			      1,              /* sender flag (yes/no) */
 			      message, 
-			      NULL,       /* filename, NULL=stdout */
+			      commName,       /* filename, NULL=stdout */
 			      MPI_INFO_NULL); /* options/hints */
 	  
 	  if ( rank2 == 1 )
@@ -136,7 +136,7 @@ int main( int argc, char *argv[] )
 			      0,              /* communication partner */
 			      0,              /* sender flag (yes/no) */
 			      message, 
-			      NULL,       /* filename, NULL=stdout */
+			      commName,       /* filename, NULL=stdout */
 			      MPI_INFO_NULL); /* options/hints */
 	  free(commName);
 	  free(message);

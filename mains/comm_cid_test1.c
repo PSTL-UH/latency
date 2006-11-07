@@ -20,7 +20,7 @@ int main( int argc, char *argv[] )
 
   MPI_Init ( &argc, &argv );
   comm = MPI_COMM_WORLD;
-  n = 200;
+  n = 2000;
   i = 0;
 
   MPI_Comm_rank ( comm, &rank );
@@ -40,7 +40,8 @@ int main( int argc, char *argv[] )
 
   printf("Execution time = %d sec %d microseconds \n",
 	 //(tm1->tm_hour - tm->tm_hour), (tm1->tm_min - tm->tm_min),
-	 (tv1.tv_sec - tv.tv_sec),(tv1.tv_usec - tv.tv_usec));
+	 (tv1.tv_sec - tv.tv_sec),
+	 tv1.tv_usec > tv.tv_usec ? (tv1.tv_usec - tv.tv_usec) : 1000000 + (tv1.tv_usec - tv_usec) );
 
   MPI_Finalize ();
 
