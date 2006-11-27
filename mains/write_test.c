@@ -11,6 +11,7 @@ int main ( int argc, char **argv)
   int j, mode=1;
   char *path=NULL;
   char *filename=NULL;
+  int numseg = 0;
 
   MPI_Init ( &argc, &argv );
   MPI_Comm_size ( MPI_COMM_WORLD, &numnode );
@@ -34,6 +35,7 @@ int main ( int argc, char **argv)
 	printf("               9 : MPI_File_iwrite\n");
 	printf("              10 : MPI_File_iwrite_at\n");
 	printf("              11 : MPI_File_iwrite_shared \n");
+	printf("              12 : MPI_File_write_all -numseg <val>\n");
 
         printf("    -f <filename>: name of resulting file (default: "
 	       "outfile.txt) \n");
@@ -46,6 +48,10 @@ int main ( int argc, char **argv)
     for(j=1;j<argc;j++)  {
         if ( !strcmp ( argv[j], "-m") ) {
             mode = atoi (argv[++j]);
+            continue;
+        }
+        if ( !strcmp ( argv[j], "-numseg") ) {
+            numseg = atoi (argv[++j]);
             continue;
         }
         else if( !strcmp ( argv[j], "-f" ) ) {
@@ -61,7 +67,22 @@ int main ( int argc, char **argv)
 	    MPI_Abort ( MPI_COMM_WORLD, 1 );
         }
     }
-	
+
+    if (12 == mode)
+    {
+	if (0 == numseg)
+	{
+		printf("With MPI_File_write_all numseg can't be 0.\n");
+		MPI_Finalize();
+		return 0;
+	}
+	if ((MAX_LEN/4)%numseg)
+	{
+		printf("Numseg should be a multiple of data packet: %d\n", MAX_LEN/4);
+		MPI_Finalize();
+		return 0;
+	}
+    }	
     if (  path == NULL ) {
 	path = (char *) malloc ( 128 );
 	getcwd ( path, 128);
@@ -194,6 +215,26 @@ int main ( int argc, char **argv)
 			     filename,       /* name for the resulting file */ 
 			     MPI_INFO_NULL); /* options/hints */
 	    break;
+	case 12:
+	{
+			    char key[] = "lat_info_numseg";
+			    char value[6] = {0};
+			    sprintf(value, "%d", numseg);
+			    MPI_Info info;
+			    MPI_Info_create(&info);
+			    MPI_Info_set(info, key, value);
+
+			    LAT_mpi_write_all ( MPI_COMM_WORLD, /* communicator */
+			    MPI_INT,        /* datatype */
+			    MAX_LEN/4,      /* max. count number */
+			    !(mynode),      /* active process (yes/no) */
+			    "sequential, datatype MPI_INT", 
+			    NULL,           /* filename, NULL=stdout */
+			    path,           /* path for the resulting file */
+			    filename,       /* name for the resulting file */
+			    info); /* options/hints */
+	    break;
+	} //case 12
 
 	default:
 	    printf("Unknown file write mode\n");
