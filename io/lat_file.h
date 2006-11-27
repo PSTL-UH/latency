@@ -92,3 +92,8 @@
 #ifdef MPI_IREAD_SHARED
 #include "mpi_iread_shared.h"
 #endif
+
+#ifdef MPI_WRITE_ALL
+#include "mpi_write_all.h"
+#endif
+

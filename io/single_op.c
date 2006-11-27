@@ -42,7 +42,6 @@ int LAT_FILE_METHODOLOGY (MPI_Comm comm, MPI_Datatype dat, int maxcount,
 
         LAT_print_status();
         LAT_print_description(msg, LAT_FILE_METHODOLOGY_STRING, info);
-
         LAT_print_bandinit ();
         LAT_FILE_MEASUREMENT ( dat, maxcount, info, path, testfile );
 

@@ -45,7 +45,6 @@
    for (_i=0; _i<_c.numseg ; _i++)                                                 \
       MPI_Recv (&(_c.rbuf[_i*_c.bufstep]), _c.cnt/_c.numseg, _c.dat, _c.partner,   \
                 4715, _c.obj, &_stat);                                             \
-
   long actual_num = 0L;
   long a;
   char *c_ptr = _c.sbuf;
