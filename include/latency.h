@@ -111,6 +111,8 @@ int LAT_mpi_write (MPI_Comm comm, MPI_Datatype dat, int maxcount, int active,
 		   char *msg, char *filename, char *path, char *testfile, MPI_Info info);
 int LAT_mpi_iwrite (MPI_Comm comm, MPI_Datatype dat, int maxcount, int active,
 		    char *msg, char *filename, char *path, char *testfile, MPI_Info info);
+int LAT_mpi_write_all (MPI_Comm comm, MPI_Datatype dat, int maxcount, int active,
+                   char *msg, char *filename, char *path, char *testfile, MPI_Info info);
 
 int LAT_seq_read (MPI_Comm comm, MPI_Datatype dat, int maxcount, int active,
 		  char *msg, char *filename, char *path, char *testfile, MPI_Info info);
