@@ -36,6 +36,7 @@ int main ( int argc, char **argv)
 	printf("              10 : MPI_File_iwrite_at\n");
 	printf("              11 : MPI_File_iwrite_shared \n");
 	printf("              12 : MPI_File_write_all -numseg <val>\n");
+	printf("              13 : MPI_File_write_at_all -numseg <val>\n");
 
         printf("    -f <filename>: name of resulting file (default: "
 	       "outfile.txt) \n");
@@ -68,7 +69,8 @@ int main ( int argc, char **argv)
         }
     }
 
-    if (12 == mode)
+    MPI_Info info;
+    if ( (12 == mode) || (13 == mode) )
     {
 	if (0 == numseg)
 	{
@@ -82,6 +84,11 @@ int main ( int argc, char **argv)
 		MPI_Finalize();
 		return 0;
 	}
+	char key[] = "lat_info_numseg";
+	char value[6] = {0};
+	sprintf(value, "%d", numseg);
+	MPI_Info_create(&info);
+	MPI_Info_set(info, key, value);
     }	
     if (  path == NULL ) {
 	path = (char *) malloc ( 128 );
@@ -217,13 +224,6 @@ int main ( int argc, char **argv)
 	    break;
 	case 12:
 	{
-			    char key[] = "lat_info_numseg";
-			    char value[6] = {0};
-			    sprintf(value, "%d", numseg);
-			    MPI_Info info;
-			    MPI_Info_create(&info);
-			    MPI_Info_set(info, key, value);
-
 			    LAT_mpi_write_all ( MPI_COMM_WORLD, /* communicator */
 			    MPI_INT,        /* datatype */
 			    MAX_LEN/4,      /* max. count number */
@@ -233,8 +233,22 @@ int main ( int argc, char **argv)
 			    path,           /* path for the resulting file */
 			    filename,       /* name for the resulting file */
 			    info); /* options/hints */
-	    break;
+			    break;
 	} //case 12
+
+	case 13:
+	{
+			    LAT_mpi_write_at_all ( MPI_COMM_WORLD, /* communicator */
+			    MPI_INT,        /* datatype */
+			    MAX_LEN/4,      /* max. count number */
+			    !(mynode),      /* active process (yes/no) */
+			    "sequential, datatype MPI_INT", 
+			    NULL,           /* filename, NULL=stdout */
+			    path,           /* path for the resulting file */
+			    filename,       /* name for the resulting file */
+			    info); /* options/hints */
+			    break;
+	} //case 13
 
 	default:
 	    printf("Unknown file write mode\n");
