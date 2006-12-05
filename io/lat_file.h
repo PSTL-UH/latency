@@ -97,3 +97,7 @@
 #include "mpi_write_all.h"
 #endif
 
+#ifdef MPI_WRITE_AT_ALL
+#include "mpi_write_at_all.h"
+#endif
+
