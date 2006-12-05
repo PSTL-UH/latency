@@ -78,6 +78,9 @@ static void LAT_FILE_MEASUREMENT ( MPI_Datatype dat, int maxcount, MPI_Info info
     int overlap_method=0;   /* adapt the problem size to transfer time */
 
     c.info = info;
+    c.buf = buf;
+    c.dat = dat;
+
     asprintf(&realname,"%s/%s",path,testfile);
     LAT_FILE_OPEN_FN(c, realname, LAT_FILE_MODE);
     free (realname);
@@ -89,10 +92,6 @@ static void LAT_FILE_MEASUREMENT ( MPI_Datatype dat, int maxcount, MPI_Info info
         CHECK_INFO_FOR_TESTRESULT(info, testresult);
 	CHECK_INFO_FOR_OVERLAP(info, overlap)
     }
-
-
-    c.buf = buf;
-    c.dat = dat;
 
     if ( testresult ) {
         EDDHR_cached_get_description (dat, &eddhr_desc);
