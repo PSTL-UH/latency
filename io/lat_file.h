@@ -105,3 +105,7 @@
 #include "mpi_write_ordered.h"
 #endif
 
+#ifdef MPI_WRITE_ALL_BEGIN
+#include "mpi_write_all_begin.h"
+#endif
+
