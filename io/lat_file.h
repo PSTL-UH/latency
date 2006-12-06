@@ -109,3 +109,7 @@
 #include "mpi_write_all_begin.h"
 #endif
 
+#ifdef MPI_WRITE_AT_ALL_BEGIN
+#include "mpi_write_at_all_begin.h"
+#endif
+
