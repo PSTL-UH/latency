@@ -113,3 +113,7 @@
 #include "mpi_write_at_all_begin.h"
 #endif
 
+#ifdef MPI_WRITE_ORDERED_BEGIN
+#include "mpi_write_ordered_begin.h"
+#endif
+
