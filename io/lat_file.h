@@ -101,3 +101,7 @@
 #include "mpi_write_at_all.h"
 #endif
 
+#ifdef MPI_WRITE_ORDERED
+#include "mpi_write_ordered.h"
+#endif
+
