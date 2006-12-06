@@ -330,6 +330,7 @@ write_test:	write_test.o ../utils/eddhr.o  \
 		../io/mpi_write_ordered.o \
 		../io/mpi_write_all_begin.o \
 		../io/mpi_write_at_all_begin.o \
+		../io/mpi_write_ordered_begin.o \
 		../io/seq_fwrite.o  $(LDFLAGS)
 	mv write_test ../bin/
 
