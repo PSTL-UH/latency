@@ -37,8 +37,9 @@ int main ( int argc, char **argv)
 	printf("              11 : MPI_File_iwrite_shared \n");
 	printf("              12 : MPI_File_write_all -numseg <val>\n");
 	printf("              13 : MPI_File_write_at_all -numseg <val>\n");
-	printf("              14 : MPI_File_write_at_all -numseg <val>\n");
+	printf("              14 : MPI_File_write_ordered -numseg <val>\n");
 	printf("              15 : MPI_File_write_all_begin -numseg <val>\n");
+	printf("              16 : MPI_File_write_at_all_begin -numseg <val>\n");
 
         printf("    -f <filename>: name of resulting file (default: "
 	       "outfile.txt) \n");
@@ -72,7 +73,7 @@ int main ( int argc, char **argv)
     }
 
     MPI_Info info;
-    if ( (12 <= mode) && (15 >= mode) )
+    if ( (12 <= mode) && (16 >= mode) )
     {
 	if (0 == numseg)
 	{
@@ -279,6 +280,20 @@ int main ( int argc, char **argv)
 			    info); /* options/hints */
 			    break;
 	} //case 15
+
+	case 16:
+	{
+			    LAT_mpi_write_at_all_begin( MPI_COMM_WORLD, /* communicator */
+			    MPI_INT,        /* datatype */
+			    MAX_LEN/4,      /* max. count number */
+			    !(mynode),      /* active process (yes/no) */
+			    "sequential, datatype MPI_INT", 
+			    NULL,           /* filename, NULL=stdout */
+			    path,           /* path for the resulting file */
+			    filename,       /* name for the resulting file */
+			    info); /* options/hints */
+			    break;
+	} //case 16
 
 	default:
 	    printf("Unknown file write mode\n");
