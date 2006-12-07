@@ -9,7 +9,7 @@ all: 	seq_write seq_writev seq_pwrite aio_write seq_fwrite \
 	mpi_iread mpi_iread_at mpi_iread_shared \
 	mpi_write_all mpi_write_at_all mpi_write_ordered \
 	mpi_write_all_begin mpi_write_at_all_begin mpi_write_ordered_begin \
-	mpi_read_all mpi_read_at_all
+	mpi_read_all mpi_read_at_all mpi_read_ordered
 
 # write  operations
 seq_write: seq_write.h single_op.c ../include/latency.h ../utils/utils.c
@@ -108,6 +108,9 @@ mpi_read_all: mpi_read_all.h coll_op.c ../include/latency.h ../utils/utils.c
 
 mpi_read_at_all: mpi_read_at_all.h coll_op.c ../include/latency.h ../utils/utils.c
 	$(CC) -c coll_op.c -o mpi_read_at_all.o -DMPI_READ_AT_ALL $(CFLAGS)
+
+mpi_read_ordered: mpi_read_ordered.h coll_op.c ../include/latency.h ../utils/utils.c
+	$(CC) -c coll_op.c -o mpi_read_ordered.o -DMPI_READ_ORDERED $(CFLAGS)
 
 clean:
 	rm -f *.o *~ 

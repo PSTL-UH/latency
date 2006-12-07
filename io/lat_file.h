@@ -125,3 +125,7 @@
 #include "mpi_read_at_all.h"
 #endif
 
+#ifdef MPI_READ_ORDERED
+#include "mpi_read_ordered.h"
+#endif
+
