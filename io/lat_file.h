@@ -121,3 +121,7 @@
 #include "mpi_read_all.h"
 #endif
 
+#ifdef MPI_READ_AT_ALL
+#include "mpi_read_at_all.h"
+#endif
+
