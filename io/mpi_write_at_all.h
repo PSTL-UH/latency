@@ -1,5 +1,5 @@
-#ifndef __LAT_MPI_WRITE__
-#define __LAT_MPI_WRITE__
+#ifndef __LAT_MPI_WRITE_AT_ALL__
+#define __LAT_MPI_WRITE_AT_ALL__
 
 /* Public interface */
 #define LAT_FD      MPI_File
@@ -81,4 +81,4 @@
 
 #define LAT_FILE_MEASUREMENT_FIN_FN(_c) 
 
-#endif /* __LAT_MPI_WRITE__ */
+#endif /* __LAT_MPI_WRITE_AT_ALL__ */

@@ -1,5 +1,5 @@
-#ifndef __LAT_MPI_IWRITE__
-#define __LAT_MPI_IWRITE__
+#ifndef __LAT_MPI_WRITE_ALL_BEGIN__
+#define __LAT_MPI_WRITE_ALL_BEGIN__
 
 /* Public interface */
 #define LAT_FD      MPI_File
@@ -79,4 +79,4 @@
   MPI_File_write_all_end(_c.fd, _c.buf, &_status); \
 }
 
-#endif /* __LAT_MPI_IWRITE__ */
+#endif /* __LAT_MPI_WRITE_ALL_BEGIN__ */

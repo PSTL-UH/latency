@@ -117,3 +117,7 @@
 #include "mpi_write_ordered_begin.h"
 #endif
 
+#ifdef MPI_READ_ALL
+#include "mpi_read_all.h"
+#endif
+

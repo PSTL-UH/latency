@@ -167,7 +167,6 @@ static void LAT_FILE_MEASUREMENT ( MPI_Datatype dat, int maxcount, MPI_Info info
         s_m = sum/(band_limit);
         E=sqrt(sum2/(band_limit)-m*m);
         s_time = s_time/(band_limit*num_limit);
-
 	if (!c.rank)
 	{
 	    LAT_print_band(LAT_FACTOR*cnt*size, s_time,max/num_limit, min/num_limit, E/s_m, 
