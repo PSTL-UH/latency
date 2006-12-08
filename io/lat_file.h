@@ -137,3 +137,7 @@
 #include "mpi_read_at_all_begin.h"
 #endif
 
+#ifdef MPI_READ_ORDERED_BEGIN
+#include "mpi_read_ordered_begin.h"
+#endif
+
