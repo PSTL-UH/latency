@@ -140,6 +140,8 @@ int LAT_mpi_read_at_all (MPI_Comm comm, MPI_Datatype dat, int maxcount, int acti
 		  char *msg, char *filename, char *path, char *testfile, MPI_Info info);
 int LAT_mpi_read_ordered (MPI_Comm comm, MPI_Datatype dat, int maxcount, int active,
 		  char *msg, char *filename, char *path, char *testfile, MPI_Info info);
+int LAT_mpi_read_all_begin (MPI_Comm comm, MPI_Datatype dat, int maxcount, int active,
+		  char *msg, char *filename, char *path, char *testfile, MPI_Info info);
 
 int lat_calc_get_size (int msglen, double ttime, int partner, int method, int verbose);
 double lat_calc_exec (int problemsize);
