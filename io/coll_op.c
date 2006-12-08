@@ -14,7 +14,7 @@
 MPI_Comm lat_user_comm;
 /*--------------------------------- Functions --------------------------------*/
 
-static void LAT_FILE_MEASUREMENT ( MPI_Datatype dat, int maxcount, MPI_Info info, 
+static void LAT_FILE_MEASUREMENT ( MPI_Comm comm, MPI_Datatype dat, int maxcount, MPI_Info info, 
 				   char *path, char *testfile );
 
 static char *buf;
@@ -29,6 +29,7 @@ struct LAT_file_object {
     MPI_Datatype      dat;
     MPI_Info         info;
     int		   numseg;
+    MPI_Comm	     comm;
     int	  	     size;
     int		     rank;
     MPI_Datatype  newtype;
@@ -52,7 +53,7 @@ int LAT_FILE_METHODOLOGY (MPI_Comm comm, MPI_Datatype dat, int maxcount,
 	LAT_print_description(msg, LAT_FILE_METHODOLOGY_STRING, info);
 	LAT_print_bandinit ();
     }
-    LAT_FILE_MEASUREMENT ( dat, maxcount, info, path, testfile );
+    LAT_FILE_MEASUREMENT ( comm, dat, maxcount, info, path, testfile );
     
     LAT_free_memory ( buf  );
     LAT_print_finalize ();
@@ -61,7 +62,7 @@ int LAT_FILE_METHODOLOGY (MPI_Comm comm, MPI_Datatype dat, int maxcount,
 }
 
 /*-------------------------------- BANDWIDTH ---------------------------------*/
-static void LAT_FILE_MEASUREMENT ( MPI_Datatype dat, int maxcount, MPI_Info info, 
+static void LAT_FILE_MEASUREMENT ( MPI_Comm comm, MPI_Datatype dat, int maxcount, MPI_Info info, 
 				   char *path, char *testfile )
 
 { 
@@ -87,6 +88,7 @@ static void LAT_FILE_MEASUREMENT ( MPI_Datatype dat, int maxcount, MPI_Info info
     c.info = info;
     c.buf = buf;
     c.dat = dat;
+    c.comm = comm;
    
     MPI_Comm_size(MPI_COMM_WORLD, &c.size); 
     MPI_Comm_rank(MPI_COMM_WORLD, &c.rank); 
