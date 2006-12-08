@@ -133,3 +133,7 @@
 #include "mpi_read_all_begin.h"
 #endif
 
+#ifdef MPI_READ_AT_ALL_BEGIN
+#include "mpi_read_at_all_begin.h"
+#endif
+
