@@ -40,7 +40,6 @@
     _ret = MPI_File_open ( MPI_COMM_SELF, _name, _mode,      \
                            _c.info, &_c.fd);                 \
     if (_ret != MPI_SUCCESS ) MPI_Abort (MPI_COMM_WORLD, 1); \
-    MPI_File_set_view (_c.fd,0,_c.dat,_c.dat,"native",_c.info); \
 }
 
 #define LAT_FILE_SET_VIEW(_c){								\
