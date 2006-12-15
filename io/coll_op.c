@@ -177,7 +177,7 @@ static void LAT_FILE_MEASUREMENT ( MPI_Comm comm, MPI_Datatype dat, int maxcount
     }
     LAT_FILE_SYNC_FN(c);
     total_etime = MPI_Wtime();
-totallength = totallength * c.size;
+    totallength = totallength * c.size;
 
     /* Convert kb into MB */
     totallength /= 1024;
