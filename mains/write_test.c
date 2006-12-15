@@ -237,8 +237,8 @@ int main ( int argc, char **argv)
 			    path,           /* path for the resulting file */
 			    filename,       /* name for the resulting file */
 			    info); /* options/hints */
-			    break;
 	} //case 12
+	break;
 
 	case 13:
 	{
@@ -251,8 +251,8 @@ int main ( int argc, char **argv)
 			    path,           /* path for the resulting file */
 			    filename,       /* name for the resulting file */
 			    info); /* options/hints */
-			    break;
 	} //case 13
+	break;
 
 	case 14:
 	{
@@ -265,8 +265,8 @@ int main ( int argc, char **argv)
 			    path,           /* path for the resulting file */
 			    filename,       /* name for the resulting file */
 			    info); /* options/hints */
-			    break;
 	} //case 14
+	break;
 
 	case 15:
 	{
@@ -279,8 +279,8 @@ int main ( int argc, char **argv)
 			    path,           /* path for the resulting file */
 			    filename,       /* name for the resulting file */
 			    info); /* options/hints */
-			    break;
 	} //case 15
+	break;
 
 	case 16:
 	{
@@ -293,8 +293,8 @@ int main ( int argc, char **argv)
 			    path,           /* path for the resulting file */
 			    filename,       /* name for the resulting file */
 			    info); /* options/hints */
-			    break;
 	} //case 16
+	break;
 
 	case 17:
 	{
@@ -307,8 +307,8 @@ int main ( int argc, char **argv)
 			    path,           /* path for the resulting file */
 			    filename,       /* name for the resulting file */
 			    info); /* options/hints */
-			    break;
 	} //case 17
+	break;
 
 	default:
 	    printf("Unknown file write mode\n");

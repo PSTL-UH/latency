@@ -367,6 +367,7 @@ read_test:	read_test.o ../utils/eddhr.o  \
 		../utils/utils.o       \
 		../utils/calc.o        \
 		../io/seq_write.o  \
+		../io/mpi_write_all.o  \
 		../io/seq_read.o  \
 		../io/seq_readv.o  \
 		../io/seq_pread.o  \
@@ -377,6 +378,12 @@ read_test:	read_test.o ../utils/eddhr.o  \
 		../io/mpi_iread.o  \
 		../io/mpi_iread_at.o  \
 		../io/mpi_iread_shared.o  \
+		../io/mpi_read_all.o  \
+		../io/mpi_read_at_all.o  \
+		../io/mpi_read_ordered.o  \
+		../io/mpi_read_all_begin.o  \
+		../io/mpi_read_at_all_begin.o  \
+		../io/mpi_read_ordered_begin.o  \
 		../io/seq_fread.o  $(LDFLAGS)
 	mv read_test ../bin/
 
