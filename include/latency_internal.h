@@ -46,6 +46,15 @@
                   _overlap = 1;  }
  
 
+#define CHECK_INFO_FOR_ATOMICITY(_info,_atomicity) {                         	\
+            int _flag; char _key[20], _value[10];                       	\
+            _atomicity = 0;                                                	\
+            strncpy(_key,"lat_info_atomicity", strlen("lat_info_atomicity")+1); \
+            MPI_Info_get(_info, _key, 10, _value, &_flag);               	\
+            if ( _flag )                                                 	\
+               if ( !strncmp(_value,"true",strlen("true")+1) )           	\
+                  _atomicity = 1;  }
+
 
 static int _lat_next_msglen ( int maxcount, int dsize, int numseg, int clen )
 {

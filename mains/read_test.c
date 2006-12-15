@@ -17,6 +17,7 @@ int main ( int argc, char **argv)
   char *path=NULL;
   char *filename=NULL;
   int numseg = 0;
+  int atomicity = 0;
 
   MPI_Init ( &argc, &argv );
   MPI_Comm_size ( MPI_COMM_WORLD, &numnode );
@@ -47,6 +48,7 @@ int main ( int argc, char **argv)
 	printf("              16 : MPI_File_read_at_all_begin -numseg <val>\n");
 	printf("              17 : MPI_File_read_ordered_begin -numseg <val>\n");
 
+	printf("    For mode's from 12 to 17, -a <0/1>: for atomicity. default is 0. \n");
         printf("    -f <filename>: name of resulting file (default: "
 	       "outfile.txt) \n");
         printf("    -p <path>    : path where to read file <filename> "
@@ -58,6 +60,10 @@ int main ( int argc, char **argv)
     for(j=1;j<argc;j++)  {
         if ( !strcmp ( argv[j], "-m") ) {
             mode = atoi (argv[++j]);
+            continue;
+        }
+        if ( !strcmp ( argv[j], "-a") ) {
+            atomicity = atoi (argv[++j]);
             continue;
         }
         if ( !strcmp ( argv[j], "-numseg") ) {
@@ -98,6 +104,18 @@ int main ( int argc, char **argv)
 	sprintf(value, "%d", numseg);
 	MPI_Info_create(&info);
 	MPI_Info_set(info, key, value);
+
+	char key2[] = "lat_info_atomicity";
+	char value2[6] = {0};
+	if (atomicity)
+	{
+		strcpy(value2, "true");
+	}
+	else
+	{
+		strcpy(value2, "false");
+	} //if
+	MPI_Info_set(info, key2, value2);
     }	
 
     if (  path == NULL ) {

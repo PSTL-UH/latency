@@ -99,12 +99,16 @@ static void LAT_FILE_MEASUREMENT ( MPI_Comm comm, MPI_Datatype dat, int maxcount
 
     MPI_Type_size ( dat, &size );
     MPI_Type_extent ( dat, &extent );
+    int atomicity = 0;
 
     if ( info != MPI_INFO_NULL ) {
         CHECK_INFO_FOR_NUMSEG(info, c.numseg);
         CHECK_INFO_FOR_TESTRESULT(info, testresult);
-	CHECK_INFO_FOR_OVERLAP(info, overlap)
+	CHECK_INFO_FOR_OVERLAP(info, overlap);
+	CHECK_INFO_FOR_ATOMICITY(info, atomicity);
     }
+
+    MPI_File_set_atomicity(c.fd, atomicity);	
 
     total_stime = MPI_Wtime ();
     cnt = maxcount;
