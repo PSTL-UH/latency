@@ -7,6 +7,7 @@ all: 	seq_write seq_writev seq_pwrite aio_write seq_fwrite \
 	seq_read seq_readv seq_pread aio_read seq_fread \
 	mpi_read mpi_read_at mpi_read_shared \
 	mpi_iread mpi_iread_at mpi_iread_shared \
+	mpi_file_write_all mpi_file_set_view mpi_file_open mpi_file_close eddhr\
 	mpi_write_all mpi_write_at_all mpi_write_ordered \
 	mpi_write_all_begin mpi_write_at_all_begin mpi_write_ordered_begin \
 	mpi_read_all mpi_read_at_all mpi_read_ordered \
@@ -85,8 +86,23 @@ mpi_iread_shared: mpi_iread_shared.h single_op.c ../include/latency.h \
 	$(CC) -c single_op.c -o mpi_iread_shared.o -DMPI_IREAD_SHARED $(CFLAGS)
 
 #collective write operations
-mpi_write_all: mpi_write_all.h coll_op.c ../include/latency.h ../utils/utils.c
-	$(CC) -c coll_op.c -o mpi_write_all.o -DMPI_WRITE_ALL $(CFLAGS)
+mpi_file_write_all: mpi_file_write_all.c mpi2.h
+	$(CC) -c mpi_file_write_all.c -o mpi_file_write_all.o
+
+mpi_file_set_view: mpi_file_set_view.c mpi2.h eddhr.h
+	$(CC) -c mpi_file_set_view.c -o mpi_file_set_view.o
+
+mpi_file_open: mpi_file_open.c mpi2.h
+	$(CC) -c mpi_file_open.c -o mpi_file_open.o
+
+mpi_file_close: mpi_file_close.c mpi2.h
+	$(CC) -c mpi_file_close.c -o mpi_file_close.o
+
+eddhr: eddhr.c eddhr.h eddhr_internal.h
+	$(CC) -c eddhr.c -o eddhr2.o
+
+mpi_write_all: mpi_write_all.h coll_op.c mpi_file_write_all.c ../include/latency.h ../utils/utils.c
+	$(CC) -c coll_op.c  -o mpi_write_all.o  -DMPI_WRITE_ALL $(CFLAGS)
 
 mpi_write_at_all: mpi_write_at_all.h coll_op.c ../include/latency.h ../utils/utils.c
 	$(CC) -c coll_op.c -o mpi_write_at_all.o -DMPI_WRITE_AT_ALL $(CFLAGS)

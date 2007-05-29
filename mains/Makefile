@@ -307,12 +307,11 @@ join: join-brother join-sister
 
 write_test.o:	write_test.c ../include/latency.h
 	$(CC) -c write_test.c $(CFLAGS)
-write_test:	write_test.o ../utils/eddhr.o  \
+write_test:	write_test.o \
 	../utils/calc.o ../utils/utils.o       \
 	../io/seq_write.o ../io/seq_fwrite.o \
 	../io/mpi_write.o 
 	$(CC) -o write_test write_test.o \
-		../utils/eddhr.o       \
 		../utils/utils.o       \
 		../utils/calc.o        \
 		../io/seq_write.o  \
@@ -325,6 +324,11 @@ write_test:	write_test.o ../utils/eddhr.o  \
 		../io/mpi_iwrite.o  \
 		../io/mpi_iwrite_at.o  \
 		../io/mpi_iwrite_shared.o  \
+		../io/eddhr2.o \
+		../io/mpi_file_write_all.o \
+		../io/mpi_file_set_view.o \
+		../io/mpi_file_open.o \
+		../io/mpi_file_close.o \
 		../io/mpi_write_all.o \
 		../io/mpi_write_at_all.o \
 		../io/mpi_write_ordered.o \
@@ -352,7 +356,7 @@ write_test_overlap:	write_test_overlap.o ../utils/eddhr.o  \
 		../io/mpi_iwrite.o  \
 		../io/mpi_iwrite_at.o  \
 		../io/mpi_iwrite_shared.o  \
-		../io/seq_fwrite.o  $(LDFLAGS)
+		../io/seq_fwrite.o  $(LDFLAGS) -g3
 	mv write_test_overlap ../bin/
 
 
