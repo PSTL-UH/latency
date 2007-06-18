@@ -96,7 +96,7 @@ static void LAT_FILE_MEASUREMENT ( MPI_Comm comm, MPI_Datatype dat, int maxcount
     asprintf(&realname,"%s/%s",path,testfile);
     LAT_FILE_OPEN_FN(c, realname, LAT_FILE_MODE);
     free (realname);
-printf("1\n");
+
     MPI_Type_size ( dat, &size );
     MPI_Type_extent ( dat, &extent );
     int atomicity = 0;
@@ -121,15 +121,12 @@ printf("1\n");
         tvtime = ttime = 0.0;
         min = 99999000.0;
       
-cnt /= 4096; 
         c.cnt      = cnt;
 	c.len      = cnt * size;
         band_limit = (cnt < MAX_SHORT_LEN ? BAND_FILE_TESTS : BAND_FILE_TESTS_LONG );
         num_limit  = (cnt < MAX_SHORT_LEN ? NUM_FILE_TESTS  : NUM_FILE_TESTS_LONG );
         
-printf("2\n");
 	LAT_FILE_SET_VIEW(c);
-printf("3\n");
 
 	totallength +=c.len/1024*(num_limit*band_limit);
         for (x=0; x<band_limit; x++) { 

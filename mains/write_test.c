@@ -111,14 +111,6 @@ int main ( int argc, char **argv)
 		strcpy(value2, "false");
 	} //if
 	MPI_Info_set(info, key2, value2);
-
-	//MPI_Info_set(info, "romio_pvfs_listio_write", "enable");
-	//MPI_Info_set(info, "romio_cb_write", "enable");
-//	char key3[] ="ind_wr_buffer_size";
-//	int val = numseg*4*numnode;
-//	char value3[10] = {0};
-//	sprintf(value3, "%d", val);
-//	MPI_Info_set(info, key3, value3);
     }	
     if (  path == NULL ) {
 	path = (char *) malloc ( 128 );

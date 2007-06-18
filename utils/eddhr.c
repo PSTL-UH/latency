@@ -9,7 +9,6 @@
 ** 2. Loop over the number of arguments when printing the data 
 */
 
-#define static 
 
 static EDDHR_struct* EDDHR_nextderdatatype ( EDDHR_struct* listhead );
 static EDDHR_head *EDDHR_decode_datatype ( MPI_Datatype dat );

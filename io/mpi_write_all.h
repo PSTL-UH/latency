@@ -61,12 +61,11 @@
     MPI_Type_struct(_c.numseg + 1, len, disp, type, &_c.newtype);			\
     MPI_Type_commit(&_c.newtype);								\
     MPI_File_set_view (_c.fd,0,_c.dat,_c.newtype,"native",_c.info); 			\
+    MPI_Type_free(&_c.newtype);							\
     free(disp);									\
     free(type);									\
     free(len);									\
 }								
-
-    //	MPI_Type_free(&_c.newtype);							\
 
 #define LAT_FILE_CLOSE_FN(_c)  MPI_File_close(&_c.fd)
 #define LAT_FILE_SYNC_FN(_c) MPI_File_sync(_c.fd)
