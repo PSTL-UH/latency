@@ -93,12 +93,11 @@ static void LAT_FILE_MEASUREMENT ( MPI_Comm comm, MPI_Datatype dat, int maxcount
     MPI_Comm_size(MPI_COMM_WORLD, &c.size); 
     MPI_Comm_rank(MPI_COMM_WORLD, &c.rank); 
 
-    asprintf(&realname,"%s/%s",path,testfile);
-    LAT_FILE_OPEN_FN(c, realname, LAT_FILE_MODE);
-    free (realname);
-
     MPI_Type_size ( dat, &size );
     MPI_Type_extent ( dat, &extent );
+
+    asprintf(&realname,"%s/%s",path,testfile);
+
     int atomicity = 0;
 
     if ( info != MPI_INFO_NULL ) {
@@ -108,9 +107,12 @@ static void LAT_FILE_MEASUREMENT ( MPI_Comm comm, MPI_Datatype dat, int maxcount
 	CHECK_INFO_FOR_ATOMICITY(info, atomicity);
     }
 
+    total_stime = MPI_Wtime ();
+    LAT_FILE_OPEN_FN(c, realname, LAT_FILE_MODE);
+    free (realname);
+
     MPI_File_set_atomicity(c.fd, atomicity);	
 
-    total_stime = MPI_Wtime ();
     cnt = maxcount;
     { 
         long x;
@@ -180,6 +182,7 @@ static void LAT_FILE_MEASUREMENT ( MPI_Comm comm, MPI_Datatype dat, int maxcount
 	} //if
     }
     LAT_FILE_SYNC_FN(c);
+    LAT_FILE_CLOSE_FN(c);
     total_etime = MPI_Wtime();
     totallength = totallength * c.size;
 
@@ -188,18 +191,14 @@ static void LAT_FILE_MEASUREMENT ( MPI_Comm comm, MPI_Datatype dat, int maxcount
 
     /* Output total summary */
 
-     LAT_FILE_CLOSE_FN(c);
-     //MPI_Barrier(MPI_COMM_WORLD);
-     double total_Stime = 0;
-     MPI_Reduce(&total_stime, &total_Stime, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD); 
-     //MPI_Barrier(MPI_COMM_WORLD);
-     double total_Etime = 0;
-     MPI_Reduce(&total_etime, &total_Etime, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD); 
+     double total_time = total_etime - total_stime;
+     double Total_time = 0;
+     MPI_Reduce(&total_time, &Total_time, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD); 
      if (!c.rank)
      {
 	 LAT_print("\n\n");
 	 LAT_print("Total amount of data %ld, total time %lf, avg. bandwidth %lf\n", 
-		   totallength, (total_Etime-total_Stime), totallength/(total_Etime-total_Stime));
+		   totallength, Total_time, totallength/Total_time);
      } //if
 
     return;
