@@ -52,7 +52,7 @@
     for (i = 0; i < _c.numseg; ++i)							\
     {							    				\
 	len[i] = _c.cnt/_c.numseg;							\
-	disp[i] = ((i*_c.size + _c.rank)*_c.cnt/_c.numseg)*datsize;			\
+	disp[i] = ((i*_c.size + _c.rank)*(_c.cnt/_c.numseg))*datsize;			\
 	type[i] = MPI_INT;								\
     } 											\
     len[_c.numseg] = 1;									\
