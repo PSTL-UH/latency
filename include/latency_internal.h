@@ -25,8 +25,7 @@
                 _numseg = atoi(_value);                                  \
             else                                                         \
                 _numseg = 1; }
-   
-                                            
+
 #define CHECK_INFO_FOR_TESTRESULT(_info,_testresult) {                   \
             int _flag; char _key[20], _value[10];                        \
             _testresult = 0;                                             \

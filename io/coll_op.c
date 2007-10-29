@@ -20,17 +20,17 @@ static void LAT_FILE_MEASUREMENT ( MPI_Comm comm, MPI_Datatype dat, int maxcount
 static char *buf;
 
 struct LAT_file_object {
-    LAT_FD             fd;
-    char             *buf;
-    int               cnt;
-    int               len;
-    off_t          offset;
-    MPI_Request       req;
-    MPI_Datatype      dat;
+    LAT_FD             fd; /* file discriptor (sync , async ..) */
+    char             *buf; /* data to be written or read */
+    int               cnt; /* number of elements to be written or read */
+    int               len; /* total number of elements */
+    off_t          offset; /* where the io has to start */
+    MPI_Request       req; 
+    MPI_Datatype      dat; /* etype */
     MPI_Info         info;
-    int		   numseg;
+    int		   numseg; 
     MPI_Comm	     comm;
-    int	  	     size;
+    int	  	     size; /* num of procs */
     int		     rank;
     MPI_Datatype  newtype;
 }; 
