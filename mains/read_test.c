@@ -4,118 +4,121 @@
 
 #include "latency.h"
 #include <string.h>
+#include <unistd.h>
+#include <getopt.h>
 
 static void check_input_file (char *path, char *filename, MPI_Datatype dat,
 			      int maxlen);
 static void check_input_file_coll (char *path, char *filename, MPI_Datatype dat, int maxlen, MPI_Info info);
-
+static void print_usage ();
 
 int main ( int argc, char **argv)
 {
   int mynode, numnode;
-  int j, mode=1;
+  int i, j, mode=1;
   char *path=NULL;
   char *filename=NULL;
   int numseg = 0;
-  int atomicity = 0;
+  int seg_size = 0;
+  int atomicity = 0;	
+  MPI_Info info;
+  static struct option long_opts[] = 
+  {
+      { "dir",             required_argument, NULL, 'p' },
+      { "segment_size",    required_argument, NULL, 's' },
+      { "mode",            required_argument, NULL, 'm' },
+      { "filename",        required_argument, NULL, 'f' },
+      { "atomicity",       required_argument, NULL, 'a' },
+      { NULL, 0, NULL, 0 }
+  };
+
+  while (-1 != (i = getopt_long (argc, argv, "p:m:f:s:a:", long_opts, NULL))) 
+  {
+      switch (i) 
+      {
+      case 'f':
+          filename = strdup (optarg);
+          break;
+      case 'p':
+          path = strdup (optarg);
+          break;
+      case 'm':
+          mode = atoi (optarg);
+          if ( 1 > mode || 17 < mode)
+          {
+              printf ("Invalid Mode\n");
+              print_usage();
+              exit (1);
+          }
+          break;
+      case 'a':
+          atomicity = atoi (optarg);
+          if (optarg[0] != '0' && atoi (optarg) == 0) 
+          {
+              printf ("Invalid Atomicity value\n");
+              exit (1);
+          }
+          break;
+      case 's':
+          seg_size = atoi (optarg);
+          if (optarg[0] != '0' && atoi (optarg) == 0) 
+          {
+              printf ("Invalid Segment size value\n");
+              exit (1);
+          }
+          break;
+      default: 
+          print_usage();
+          exit (1);
+      }
+  }
 
   MPI_Init ( &argc, &argv );
   MPI_Comm_size ( MPI_COMM_WORLD, &numnode );
   MPI_Comm_rank ( MPI_COMM_WORLD, &mynode );
 
-   if ( argc == 1 ) {
-        printf("Usage: mpirun -np 1 ./read_test -m <mode> -f <filename> "
-	       "-p <path> \n");
-        printf("\n");
-        printf("   with: \n");
-        printf("    -m <mode>    : read using a certain mode, mode being "
-	       "(default: 1) \n");
-	printf("               1 : seq_read\n");
-	printf("               2 : seq_fread\n");
-	printf("               3 : seq_readv\n");
-	printf("               4 : seq_pread\n");
-	printf("               5 : aio_read\n");
-	printf("               6 : MPI_File_read\n");
-	printf("               7 : MPI_File_read_at \n");
-	printf("               8 : MPI_File_read_shared \n");
-	printf("               9 : MPI_File_iread\n");
-	printf("              10 : MPI_File_iread_at\n");
-	printf("              11 : MPI_File_iread_shared \n");
-	printf("              12 : MPI_File_read_all -numseg <val>\n");
-	printf("              13 : MPI_File_read_at_all -numseg <val>\n");
-	printf("              14 : MPI_File_read_ordered -numseg <val>\n");
-	printf("              15 : MPI_File_read_all_begin -numseg <val>\n");
-	printf("              16 : MPI_File_read_at_all_begin -numseg <val>\n");
-	printf("              17 : MPI_File_read_ordered_begin -numseg <val>\n");
-
-	printf("    For mode's from 12 to 17, -a <0/1>: for atomicity. default is 0. \n");
-        printf("    -f <filename>: name of resulting file (default: "
-	       "outfile.txt) \n");
-        printf("    -p <path>    : path where to read file <filename> "
-	       "(default: cwd) \n");
-        exit(1);
-    }
-
-
-    for(j=1;j<argc;j++)  {
-        if ( !strcmp ( argv[j], "-m") ) {
-            mode = atoi (argv[++j]);
-            continue;
-        }
-        if ( !strcmp ( argv[j], "-a") ) {
-            atomicity = atoi (argv[++j]);
-            continue;
-        }
-        if ( !strcmp ( argv[j], "-numseg") ) {
-            numseg = atoi (argv[++j]);
-            continue;
-        }
-        else if( !strcmp ( argv[j], "-f" ) ) {
-            filename = strdup (argv[++j]);
-            continue;
-        }
-        else if( !strcmp ( argv[j], "-p")) {
-            path = strdup (argv[++j]);
-            continue;
-	}
-	else {
-            printf("Unknow flag %s\n", argv[j]);
-	    MPI_Abort ( MPI_COMM_WORLD, 1 );
-        }
-    }
-	
-    MPI_Info info;
-    if ( (12 <= mode) && (17 >= mode) )
+  if ( (12 <= mode) && (17 >= mode) )
     {
-	if (0 == numseg)
-	{
-		printf("With MPI_File_write_all numseg can't be 0.\n");
-		MPI_Finalize();
-		return 0;
-	}
-	if ((MAX_LEN/4)%numseg)
+        char key1[] = "lat_info_numseg";
+	char key2[] = "lat_info_atomicity";
+        char *info_value;
+
+        if (0 == seg_size)
+        {
+            printf("With MPI_File_read_all seg_size can't be 0");
+            MPI_Finalize();
+            return 0;
+        }
+        numseg = MAX_LEN/seg_size;
+        if ((MAX_LEN/4)%numseg)
 	{
 		printf("Numseg should be a multiple of data packet: %d\n", MAX_LEN/4);
 		MPI_Finalize();
 		return 0;
 	}
-	char key[] = "lat_info_numseg";
-	char value[6] = {0};
-	sprintf(value, "%d", numseg);
-	MPI_Info_create(&info);
-	MPI_Info_set(info, key, value);
 
-	char key2[] = "lat_info_atomicity";
-	char value2[6] = {0};
+        asprintf(&info_value, "%d", numseg);
+
+        MPI_Info_create(&info);
+        MPI_Info_set(info, key1, info_value);
+        if (NULL != info_value)
+        {
+            free (info_value);
+        }
+	
 	if (atomicity)
 	{
-		strcpy(value2, "true");
+            info_value = strdup("true");
 	}
 	else
 	{
-		strcpy(value2, "false");
-	} //if
-	MPI_Info_set(info, key2, value2);
+            info_value = strdup("false");
+	}
+	MPI_Info_set(info, key2, info_value);
+        if (NULL != info_value)
+        {
+            free (info_value);
+        }
     }	
 
     if (  path == NULL ) {
@@ -427,4 +430,37 @@ static void check_input_file_coll (char *path, char *filename, MPI_Datatype dat,
   free (realname);
 
   return;
+}
+
+static void print_usage()
+{
+    printf("Usage: mpirun -np 1 ./read_test -m <mode> -f <filename> "
+           "-p <path> \n");
+    printf("\n");
+    printf("   with: \n");
+    printf("    -m <mode>    : read using a certain mode, mode being "
+           "(default: 1) \n");
+    printf("               1 : seq_read\n");
+    printf("               2 : seq_fread\n");
+    printf("               3 : seq_readv\n");
+    printf("               4 : seq_pread\n");
+    printf("               5 : aio_read\n");
+    printf("               6 : MPI_File_read\n");
+    printf("               7 : MPI_File_read_at \n");
+    printf("               8 : MPI_File_read_shared \n");
+    printf("               9 : MPI_File_iread\n");
+    printf("              10 : MPI_File_iread_at\n");
+    printf("              11 : MPI_File_iread_shared \n");
+    printf("              12 : MPI_File_read_all -numseg <val>\n");
+    printf("              13 : MPI_File_read_at_all -numseg <val>\n");
+    printf("              14 : MPI_File_read_ordered -numseg <val>\n");
+    printf("              15 : MPI_File_read_all_begin -numseg <val>\n");
+    printf("              16 : MPI_File_read_at_all_begin -numseg <val>\n");
+    printf("              17 : MPI_File_read_ordered_begin -numseg <val>\n");
+    
+    printf("    For mode's from 12 to 17, -a <0/1>: for atomicity. default is 0. \n");
+    printf("    -f <filename>: name of resulting file (default: "
+           "outfile.txt) \n");
+    printf("    -p <path>    : path where to read file <filename> "
+           "(default: cwd) \n");
 }

@@ -13,7 +13,7 @@ static void print_usage();
 int main ( int argc, char **argv)
 {
   int mynode, numnode;
-  int j, mode=1;
+  int i, j, mode=1;
   char *path=NULL;
   char *filename=NULL;
   char key[]={"lat_info_overlap"};
