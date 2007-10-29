@@ -5,71 +5,59 @@
 
 #include "latency.h"
 #include <string.h>
+#include <getopt.h>
 
 static void check_input_file (char *path, char *filename, MPI_Datatype dat,
 			      int maxlen);
-
+static void print_usage ();
 
 int main ( int argc, char **argv)
 {
   int mynode, numnode;
-  int j, mode=1;
+  int i, j, mode=1;
   char *path=NULL;
   char *filename=NULL;
   char key[]={"lat_info_overlap"};
   char value[]={"true"};
   MPI_Info info;
 
+  static struct option long_opts[] = 
+  {
+      { "dir",             required_argument, NULL, 'p' },
+      { "filename",        required_argument, NULL, 'f' },
+      { "mode",            required_argument, NULL, 'm' },
+      { NULL, 0, NULL, 0 }
+  };
+
+  while (-1 != (i = getopt_long (argc, argv, "p:m:f:", long_opts, NULL))) 
+  {
+      switch (i) 
+      {
+      case 'f':
+          filename = strdup (optarg);
+          break;
+      case 'p':
+          path = strdup (optarg);
+          break;
+      case 'm':
+          mode = atoi (optarg);
+          if ( 1 > mode || 11 < mode)
+          {
+              printf ("Invalid Mode\n");
+              print_usage();
+              exit (1);
+          }
+          break;
+      default: 
+          print_usage();
+          exit (1);
+      }
+  }
+
   MPI_Init ( &argc, &argv );
   MPI_Comm_size ( MPI_COMM_WORLD, &numnode );
   MPI_Comm_rank ( MPI_COMM_WORLD, &mynode );
 
-   if ( argc == 1 ) {
-        printf("Usage: mpirun -np 1 ./read_test -m <mode> -f <filename> "
-	       "-p <path> \n");
-        printf("\n");
-        printf("   with: \n");
-        printf("    -m <mode>    : read using a certain mode, mode being "
-	       "(default: 1) \n");
-	printf("               1 : seq_read\n");
-	printf("               2 : seq_fread\n");
-	printf("               3 : seq_readv\n");
-	printf("               4 : seq_pread\n");
-	printf("               5 : aio_read\n");
-	printf("               6 : MPI_File_read\n");
-	printf("               7 : MPI_File_read_at \n");
-	printf("               8 : MPI_File_read_shared \n");
-	printf("               9 : MPI_File_iread\n");
-	printf("              10 : MPI_File_iread_at\n");
-	printf("              11 : MPI_File_iread_shared \n");
-
-        printf("    -f <filename>: name of resulting file (default: "
-	       "outfile.txt) \n");
-        printf("    -p <path>    : path where to read file <filename> "
-	       "(default: cwd) \n");
-        exit(1);
-    }
-
-
-    for(j=1;j<argc;j++)  {
-        if ( !strcmp ( argv[j], "-m") ) {
-            mode = atoi (argv[++j]);
-            continue;
-        }
-        else if( !strcmp ( argv[j], "-f" ) ) {
-            filename = strdup (argv[++j]);
-            continue;
-        }
-        else if( !strcmp ( argv[j], "-p")) {
-            path = strdup (argv[++j]);
-            continue;
-	}
-	else {
-            printf("Unknow flag %s\n", argv[j]);
-	    MPI_Abort ( MPI_COMM_WORLD, 1 );
-        }
-    }
-	
     if (  path == NULL ) {
 	path = (char *) malloc ( 128 );
 	getcwd ( path, 128);
@@ -260,4 +248,28 @@ static void check_input_file (char *path, char *filename, MPI_Datatype dat,
   free (realname);
 
   return;
+}
+
+static void print_usage ()
+{
+    printf("Usage: mpirun -np 1 ./read_test -m <mode> -f <filename> "
+           "-p <path> \n");
+    printf("\n");
+    printf("   with: \n");
+    printf("    -m <mode>    : read using a certain mode, mode being "
+           "(default: 1) \n");
+    printf("               1 : seq_read\n");
+    printf("               2 : seq_fread\n");
+    printf("               3 : seq_readv\n");
+    printf("               4 : seq_pread\n");
+    printf("               5 : aio_read\n");
+    printf("               6 : MPI_File_read\n");
+    printf("               7 : MPI_File_read_at \n");
+    printf("               8 : MPI_File_read_shared \n");
+    printf("               9 : MPI_File_iread\n");
+    printf("              10 : MPI_File_iread_at\n");
+    printf("              11 : MPI_File_iread_shared \n");
+    
+    printf("    -f <filename>: name of resulting file (default: outfile.txt) \n");
+    printf("    -p <path>    : path where to read file <filename> (default: cwd) \n");
 }

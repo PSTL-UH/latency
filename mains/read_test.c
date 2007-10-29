@@ -4,7 +4,6 @@
 
 #include "latency.h"
 #include <string.h>
-#include <unistd.h>
 #include <getopt.h>
 
 static void check_input_file (char *path, char *filename, MPI_Datatype dat,

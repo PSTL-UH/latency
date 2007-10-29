@@ -4,7 +4,6 @@
 
 #include "latency.h"
 #include <getopt.h>
-#include <unistd.h>
 #include <string.h>
 
 static void print_usage();

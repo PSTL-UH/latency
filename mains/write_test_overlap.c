@@ -5,7 +5,6 @@
 
 #include "latency.h"
 #include <string.h>
-#include <unistd.h>
 #include <getopt.h>
 
 static void print_usage();
@@ -23,7 +22,7 @@ int main ( int argc, char **argv)
   static struct option long_opts[] = 
   {
       { "dir",             required_argument, NULL, 'p' },
-      { "segment_size",    required_argument, NULL, 's' },
+      { "filename",    required_argument, NULL, 'f' },
       { "mode",            required_argument, NULL, 'm' },
       { NULL, 0, NULL, 0 }
   };
