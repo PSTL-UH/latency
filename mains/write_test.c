@@ -7,7 +7,8 @@
 #include <unistd.h>
 #include <string.h>
 
-static void print_usage ();
+static void print_usage();
+
 int main ( int argc, char **argv)
 {
   int mynode, numnode;
@@ -24,11 +25,11 @@ int main ( int argc, char **argv)
       { "segment_size",    required_argument, NULL, 's' },
       { "mode",            required_argument, NULL, 'm' },
       { "filename",        required_argument, NULL, 'f' },
-      { "atomicity",        required_argument, NULL, 'a' },
+      { "atomicity",       required_argument, NULL, 'a' },
       { NULL, 0, NULL, 0 }
   };
 
-  while (-1 != (i = getopt_long (argc, argv, "p:m:f:s:", long_opts, NULL))) 
+  while (-1 != (i = getopt_long (argc, argv, "p:m:f:s:a:", long_opts, NULL))) 
   {
       switch (i) 
       {

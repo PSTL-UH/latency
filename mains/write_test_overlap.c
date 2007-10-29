@@ -5,6 +5,10 @@
 
 #include "latency.h"
 #include <string.h>
+#include <unistd.h>
+#include <getopt.h>
+
+static void print_usage();
 
 int main ( int argc, char **argv)
 {
@@ -16,56 +20,43 @@ int main ( int argc, char **argv)
   char value[]={"true"};
   MPI_Info info;
 
+  static struct option long_opts[] = 
+  {
+      { "dir",             required_argument, NULL, 'p' },
+      { "segment_size",    required_argument, NULL, 's' },
+      { "mode",            required_argument, NULL, 'm' },
+      { NULL, 0, NULL, 0 }
+  };
+
+  while (-1 != (i = getopt_long (argc, argv, "p:m:f:", long_opts, NULL))) 
+  {
+      switch (i) 
+      {
+      case 'f':
+          filename = strdup (optarg);
+          break;
+      case 'p':
+          path = strdup (optarg);
+          break;
+      case 'm':
+          mode = atoi (optarg);
+          if ( 1 > mode || 11 < mode)
+          {
+              printf ("Invalid Mode\n");
+              print_usage();
+              exit (1);
+          }
+          break;
+      default: 
+          print_usage();
+          exit (1);
+      }
+  }
+
   MPI_Init ( &argc, &argv );
   MPI_Comm_size ( MPI_COMM_WORLD, &numnode );
   MPI_Comm_rank ( MPI_COMM_WORLD, &mynode );
 
-   if ( argc == 1 ) {
-        printf("Usage: mpirun -np 1 ./write_test_overlap -m <mode> -f <filename> "
-	       "-p <path> \n");
-        printf("\n");
-        printf("   with: \n");
-        printf("    -m <mode>    : write using a certain mode, mode being "
-	       "(default: 1) \n");
-	printf("               1 : seq_write\n");
-	printf("               2 : seq_fwrite\n");
-	printf("               3 : seq_writev\n");
-	printf("               4 : seq_pwrite\n");
-	printf("               5 : aio_write\n");
-	printf("               6 : MPI_File_write\n");
-	printf("               7 : MPI_File_write_at \n");
-	printf("               8 : MPI_File_write_shared \n");
-	printf("               9 : MPI_File_iwrite\n");
-	printf("              10 : MPI_File_iwrite_at\n");
-	printf("              11 : MPI_File_iwrite_shared \n");
-
-        printf("    -f <filename>: name of resulting file (default: "
-	       "outfile.txt) \n");
-        printf("    -p <path>    : path where to write file <filename> "
-	       "(default: cwd) \n");
-        exit(1);
-    }
-
-
-    for(j=1;j<argc;j++)  {
-        if ( !strcmp ( argv[j], "-m") ) {
-            mode = atoi (argv[++j]);
-            continue;
-        }
-        else if( !strcmp ( argv[j], "-f" ) ) {
-            filename = strdup (argv[++j]);
-            continue;
-        }
-        else if( !strcmp ( argv[j], "-p")) {
-            path = strdup (argv[++j]);
-            continue;
-	}
-	else {
-            printf("Unknow flag %s\n", argv[j]);
-	    MPI_Abort ( MPI_COMM_WORLD, 1 );
-        }
-    }
-	
     if (  path == NULL ) {
 	path = (char *) malloc ( 128 );
 	getcwd ( path, 128);
@@ -217,4 +208,27 @@ int main ( int argc, char **argv)
 
     MPI_Finalize ();
     return ( 0 ) ;
+}
+
+static void print_usage()
+{
+    printf("Usage: mpirun -np 1 ./write_test_overlap -m <mode> -f <filename> "
+           "-p <path> \n");
+    printf("\n");
+    printf("   with: \n");
+    printf("    -m <mode>    : write using a certain mode, mode being "
+           "(default: 1) \n");
+    printf("               1 : seq_write\n");
+    printf("               2 : seq_fwrite\n");
+    printf("               3 : seq_writev\n");
+    printf("               4 : seq_pwrite\n");
+    printf("               5 : aio_write\n");
+    printf("               6 : MPI_File_write\n");
+    printf("               7 : MPI_File_write_at \n");
+    printf("               8 : MPI_File_write_shared \n");
+    printf("               9 : MPI_File_iwrite\n");
+    printf("              10 : MPI_File_iwrite_at\n");
+    printf("              11 : MPI_File_iwrite_shared \n");
+    printf("    -f <filename>: name of resulting file (default: outfile.txt) \n");
+    printf("    -p <path>    : path where to write file <filename> (default: cwd) \n");
 }
