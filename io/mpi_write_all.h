@@ -49,14 +49,14 @@
     int i = 0;										\
     int datsize = 0;									\
     MPI_Type_size(_c.dat, &datsize);							\
-    for (i = 0; i < _c.numseg; ++i)							\
+    for (i = 0; i < _c.numseg; i++)							\
     {							    				\
 	len[i] = _c.cnt/_c.numseg;							\
 	disp[i] = ((i*_c.size + _c.rank)*(_c.cnt/_c.numseg))*datsize;		\
 	type[i] = MPI_INT;								\
     } 											\
     len[_c.numseg] = 1;								\
-    disp[_c.numseg] = ((_c.cnt*_c.size)+(_c.rank*_c.cnt/_c.numseg))*datsize;	\
+    disp[_c.numseg] = ((i*_c.size+_c.rank)*(_c.cnt/_c.numseg)*datsize;	\
     type[_c.numseg] = MPI_UB;								\
     MPI_Type_struct(_c.numseg + 1, len, disp, type, &_c.newtype);			\
     MPI_Type_commit(&_c.newtype);								\
