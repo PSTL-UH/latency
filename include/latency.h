@@ -151,6 +151,4 @@ int lat_calc_get_size (int msglen, double ttime, int partner, int method, int ve
 double lat_calc_exec (int problemsize);
 
 
-
-
 #endif /* __LATENCY_H__ */

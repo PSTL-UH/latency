@@ -1,6 +1,8 @@
 
 include ../Makefile.defs
 
+UHIO=/home/mschaara/uhio/trunk/src/
+
 all: basic basic-info basictoall allbasictypes alltransfer alldertypes \
 	spawn connect onesided onesided-multiseg onesided-alldertypes \
 	duplex join group_excl_next_elt comm_cid_test1 comm_cid_test2
@@ -312,7 +314,6 @@ write_test:	write_test.o ../utils/eddhr.o \
 	../io/seq_write.o ../io/seq_fwrite.o \
 	../io/mpi_write.o 
 	$(CC) -o write_test write_test.o \
-		../utils/eddhr.o     \
 		../utils/utils.o       \
 		../utils/calc.o        \
 		../io/seq_write.o  \
@@ -326,12 +327,23 @@ write_test:	write_test.o ../utils/eddhr.o \
 		../io/mpi_iwrite_at.o  \
 		../io/mpi_iwrite_shared.o  \
 		../io/mpi_write_all.o \
+		$(UHIO)/eddhr/objs/mca_io_uh_eddhr.o \
+		$(UHIO)/io/objs/mca_io_uh_async.o \
+		$(UHIO)/io/objs/mca_io_uh_file_close.o \
+		$(UHIO)/io/objs/mca_io_uh_file_open.o \
+		$(UHIO)/io/objs/mca_io_uh_file_read_all.o \
+		$(UHIO)/io/objs/mca_io_uh_file_set_view.o \
+		$(UHIO)/io/objs/mca_io_uh_file_write_all.o \
+		$(UHIO)/io/objs/mca_io_uh_init.o \
+		$(UHIO)/io/objs/mca_io_uh.o \
+		$(UHIO)/io/objs/mca_io_uh_sync.o \
+		$(UHIO)/io/objs/mca_io_uh_nblk.o \
 		../io/mpi_write_at_all.o \
 		../io/mpi_write_ordered.o \
 		../io/mpi_write_all_begin.o \
 		../io/mpi_write_at_all_begin.o \
 		../io/mpi_write_ordered_begin.o \
-		../io/seq_fwrite.o  $(LDFLAGS)
+		../io/seq_fwrite.o  -g -O0  $(LDFLAGS) 
 	mv write_test ../bin/
 
 write_test_overlap.o:	write_test_overlap.c ../include/latency.h
@@ -363,7 +375,6 @@ read_test:	read_test.o ../utils/eddhr.o  \
 	../io/seq_read.o ../io/seq_fread.o \
 	../io/mpi_read.o ../io/seq_read.o
 	$(CC) -o read_test read_test.o \
-		../utils/eddhr.o       \
 		../utils/utils.o       \
 		../utils/calc.o        \
 		../io/seq_write.o  \
@@ -378,13 +389,24 @@ read_test:	read_test.o ../utils/eddhr.o  \
 		../io/mpi_iread.o  \
 		../io/mpi_iread_at.o  \
 		../io/mpi_iread_shared.o  \
+		$(UHIO)/eddhr/objs/mca_io_uh_eddhr.o \
+		$(UHIO)/io/objs/mca_io_uh_async.o \
+		$(UHIO)/io/objs/mca_io_uh_file_close.o \
+		$(UHIO)/io/objs/mca_io_uh_file_open.o \
+		$(UHIO)/io/objs/mca_io_uh_file_read_all.o \
+		$(UHIO)/io/objs/mca_io_uh_file_set_view.o \
+		$(UHIO)/io/objs/mca_io_uh_file_write_all.o \
+		$(UHIO)/io/objs/mca_io_uh_init.o \
+		$(UHIO)/io/objs/mca_io_uh.o \
+		$(UHIO)/io/objs/mca_io_uh_sync.o \
+		$(UHIO)/io/objs/mca_io_uh_nblk.o \
 		../io/mpi_read_all.o  \
 		../io/mpi_read_at_all.o  \
 		../io/mpi_read_ordered.o  \
 		../io/mpi_read_all_begin.o  \
 		../io/mpi_read_at_all_begin.o  \
 		../io/mpi_read_ordered_begin.o  \
-		../io/seq_fread.o  $(LDFLAGS)
+		../io/seq_fread.o  $(LDFLAGS) 
 	mv read_test ../bin/
 
 read_test_overlap.o:	read_test_overlap.c ../include/latency.h
