@@ -4,7 +4,7 @@ include ../Makefile.defs
 all: send_recv isend_recv send_irecv sendrecv isend_irecv \
 	put_startpost get_startpost put_winfence get_winfence \
 	put_startpost_duplex put_winfence_duplex \
-	get_winfence_duplex get_startpost_duplex 
+	get_winfence_duplex get_startpost_duplex adcl_ibcast
 
 nompi2: send_recv isend_recv send_irecv isend_irecv sendrecv 
 
@@ -50,6 +50,9 @@ get_startpost_duplex:	get_startpost_duplex.h ping_pong.c ../include/latency.h ..
 
 get_winfence_duplex:	get_winfence_duplex.h ping_pong.c ../include/latency.h ../utils/utils.c	
 	$(CC) -c ping_pong.c -o get_winfence_duplex.o -DGET_WINFENCE_DUPLEX $(CFLAGS)	
+
+adcl_ibcast:	coll_adcl_ibcast.h coll_op.c ../include/latency.h ../utils/utils.c
+	$(CC) -c coll_op.c -o coll_adcl_ibcast.o -DADCL_IBCAST $(CFLAGS)	
 
 clean:
 	rm -f *.o *~ 

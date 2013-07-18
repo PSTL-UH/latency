@@ -54,6 +54,15 @@
                if ( !strncmp(_value,"true",strlen("true")+1) )           	\
                   _atomicity = 1;  }
 
+#define CHECK_INFO_FOR_BLOCKING_TIME(_info,_btime) {                            \
+  int _flag; char _key[20], _value[10];                               \
+  strncpy(_key,"lat_info_btime", strlen("lat_info_btime")+1); \
+  MPI_Info_get(_info, _key, 10, _value, &_flag);                      \
+  if ( _flag )                                                \
+    _btime = atof(_value);                                  \
+  else                                                        \
+    _btime = 0; }
+
 
 static int _lat_next_msglen ( int maxcount, int dsize, int numseg, int clen )
 {

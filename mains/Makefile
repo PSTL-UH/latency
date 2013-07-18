@@ -5,7 +5,7 @@ UHIO=/home/mschaara/uhio/trunk/src/
 
 all: basic basic-info basictoall allbasictypes alltransfer alldertypes \
 	spawn connect onesided onesided-multiseg onesided-alldertypes \
-	duplex join group_excl_next_elt comm_cid_test1 comm_cid_test2
+	duplex join group_excl_next_elt comm_cid_test1 comm_cid_test2 adcl_ibcast
 
 nompi2: basic basictoall allbasictypes alltransfer alldertypes 
 io:	write_test write_test_overlap read_test read_test_overlap
@@ -430,6 +430,17 @@ read_test_overlap:	read_test_overlap.o ../utils/eddhr.o  \
 		../io/mpi_iread_shared.o  \
 		../io/seq_fread.o  $(LDFLAGS)
 	mv read_test_overlap ../bin/
+
+adcl_ibcast.o: adcl_ibcast.c ../include/latency.h 
+	$(CC) -c adcl_ibcast.c $(CFLAGS)
+adcl_ibcast: 	adcl_ibcast.o ../utils/utils.o ../utils/eddhr.o \
+		../transfer/coll_adcl_ibcast.o ../utils/calc.o
+### generating adcl_ibcast.o
+	cd ../transfer ; make adcl_ibcast ; cd ../mains
+	$(CXX) -o  adcl_ibcast adcl_ibcast.o $(CFLAGS)  \
+		../transfer/coll_adcl_ibcast.o ../utils/calc.o \
+		../utils/eddhr.o ../utils/utils.o $(LDFLAGS)
+	mv adcl_ibcast $(BIN_DIR)
 
 clean:
 	rm -f *.o *~ 

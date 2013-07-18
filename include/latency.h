@@ -150,5 +150,8 @@ int LAT_mpi_read_ordered_begin (MPI_Comm comm, MPI_Datatype dat, int maxcount, i
 int lat_calc_get_size (int msglen, double ttime, int partner, int method, int verbose);
 double lat_calc_exec (int problemsize);
 
+int LAT_coll_adcl_ibcast (MPI_Comm comm, MPI_Datatype dat, int maxcount,
+                          int active, char *msg, char *filename, MPI_Info info );
+
 
 #endif /* __LATENCY_H__ */
