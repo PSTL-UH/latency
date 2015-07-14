@@ -1,7 +1,6 @@
 
 include ../Makefile.defs
 
-UHIO=/home/mschaara/uhio/trunk/src/
 
 all: basic basic-info basictoall allbasictypes alltransfer alldertypes \
 	spawn connect onesided onesided-multiseg onesided-alldertypes \
@@ -261,7 +260,7 @@ connect-brother.o: connect-brother.c ../include/latency.h
 connect-brother: connect-brother.o ../transfer/send_recv.o \
 		../utils/eddhr.o ../utils/calc.o        \
 		../communicators/connect.o
-	$(CC) -tcpip -o connect-brother connect-brother.o ../transfer/send_recv.o \
+	$(CC) -o connect-brother connect-brother.o ../transfer/send_recv.o \
 		../utils/eddhr.o ../utils/calc.o        \
 		../utils/utils.o ../communicators/connect.o $(LDFLAGS)
 
@@ -270,7 +269,7 @@ connect-sister.o: connect-sister.c ../include/latency.h
 connect-sister:	connect-sister.o ../transfer/send_recv.o \
 		../utils/eddhr.o ../utils/calc.o        \
 		../communicators/connect.o
-	$(CC) -tcpip -o connect-sister connect-sister.o ../transfer/send_recv.o \
+	$(CC) -o connect-sister connect-sister.o ../transfer/send_recv.o \
 		../utils/eddhr.o ../utils/calc.o        \
 		../utils/utils.o ../communicators/connect.o $(LDFLAGS)
 
@@ -316,6 +315,7 @@ write_test:	write_test.o ../utils/eddhr.o \
 	$(CC) -o write_test write_test.o \
 		../utils/utils.o       \
 		../utils/calc.o        \
+		../utils/eddhr.o       \
 		../io/seq_write.o  \
 		../io/seq_writev.o  \
 		../io/seq_pwrite.o  \
@@ -327,17 +327,6 @@ write_test:	write_test.o ../utils/eddhr.o \
 		../io/mpi_iwrite_at.o  \
 		../io/mpi_iwrite_shared.o  \
 		../io/mpi_write_all.o \
-		$(UHIO)/eddhr/objs/mca_io_uh_eddhr.o \
-		$(UHIO)/io/objs/mca_io_uh_async.o \
-		$(UHIO)/io/objs/mca_io_uh_file_close.o \
-		$(UHIO)/io/objs/mca_io_uh_file_open.o \
-		$(UHIO)/io/objs/mca_io_uh_file_read_all.o \
-		$(UHIO)/io/objs/mca_io_uh_file_set_view.o \
-		$(UHIO)/io/objs/mca_io_uh_file_write_all.o \
-		$(UHIO)/io/objs/mca_io_uh_init.o \
-		$(UHIO)/io/objs/mca_io_uh.o \
-		$(UHIO)/io/objs/mca_io_uh_sync.o \
-		$(UHIO)/io/objs/mca_io_uh_nblk.o \
 		../io/mpi_write_at_all.o \
 		../io/mpi_write_ordered.o \
 		../io/mpi_write_all_begin.o \
@@ -377,6 +366,7 @@ read_test:	read_test.o ../utils/eddhr.o  \
 	$(CC) -o read_test read_test.o \
 		../utils/utils.o       \
 		../utils/calc.o        \
+		../utils/eddhr.o       \
 		../io/seq_write.o  \
 		../io/mpi_write_all.o  \
 		../io/seq_read.o  \
@@ -389,17 +379,6 @@ read_test:	read_test.o ../utils/eddhr.o  \
 		../io/mpi_iread.o  \
 		../io/mpi_iread_at.o  \
 		../io/mpi_iread_shared.o  \
-		$(UHIO)/eddhr/objs/mca_io_uh_eddhr.o \
-		$(UHIO)/io/objs/mca_io_uh_async.o \
-		$(UHIO)/io/objs/mca_io_uh_file_close.o \
-		$(UHIO)/io/objs/mca_io_uh_file_open.o \
-		$(UHIO)/io/objs/mca_io_uh_file_read_all.o \
-		$(UHIO)/io/objs/mca_io_uh_file_set_view.o \
-		$(UHIO)/io/objs/mca_io_uh_file_write_all.o \
-		$(UHIO)/io/objs/mca_io_uh_init.o \
-		$(UHIO)/io/objs/mca_io_uh.o \
-		$(UHIO)/io/objs/mca_io_uh_sync.o \
-		$(UHIO)/io/objs/mca_io_uh_nblk.o \
 		../io/mpi_read_all.o  \
 		../io/mpi_read_at_all.o  \
 		../io/mpi_read_ordered.o  \
