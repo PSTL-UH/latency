@@ -188,13 +188,3 @@ Currently the following building blocks are considered:
 				for this test, connect-brother and 
 				connect-sister. Both have to be started 
 				manually.
-				
-
-Main author:
-	Edgar Gabriel <egabriel@cs.utk.edu>
-
-Historic authors:
-	Thomas Beisel <beisel@hlrs.de>
-	Matthias Mueller <mueller@hlrs.de>
-	Holger Berger <hberger@cshpcpsp.de>
-
