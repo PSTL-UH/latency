@@ -154,7 +154,7 @@ static EDDHR_head* EDDHR_decode_datatype ( MPI_Datatype dat )
     int done=0, i, j;
     int numints, numaddr, numdat, combiner;
     int *intarr;
-    MPI_Aint *addrarr, prevdisp, extent;
+    MPI_Aint *addrarr, prevdisp, extent, lb;
     MPI_Datatype *datarr;
 
     /*
@@ -163,7 +163,7 @@ static EDDHR_head* EDDHR_decode_datatype ( MPI_Datatype dat )
     head = (EDDHR_head *)malloc ( sizeof(EDDHR_head) );
     GETFIRSTELEM ( start, dat );
     head->dat = dat;
-    MPI_Type_extent ( dat, &(head->extent));
+    MPI_Type_get_extent ( dat, &lb, &(head->extent));
     MPI_Type_get_envelope ( dat, &numints, &numaddr, &numdat, 
                             &(head->combiner));
     head->next = start;
@@ -218,7 +218,7 @@ static EDDHR_head* EDDHR_decode_datatype ( MPI_Datatype dat )
             break;
 #endif
         case MPI_COMBINER_CONTIGUOUS:
-            MPI_Type_extent ( datarr[0], &extent );
+  	    MPI_Type_get_extent ( datarr[0], &lb, &extent );
             for ( i = 0; i < intarr[0]; i++ ){
                 current->combiner = MPI_COMBINER_CONTIGUOUS;
                 SETDAT(current, datarr[0] );
@@ -231,7 +231,7 @@ static EDDHR_head* EDDHR_decode_datatype ( MPI_Datatype dat )
             }
             break;
         case MPI_COMBINER_VECTOR:
-            MPI_Type_extent ( datarr[0], &extent );
+	    MPI_Type_get_extent ( datarr[0], &lb, &extent );
             prevdisp = current->disp;
             for ( i = 0; i < intarr[0]; i++ ){
                 for ( j = 0; j < intarr[1]; j++ ) {
@@ -259,7 +259,7 @@ static EDDHR_head* EDDHR_decode_datatype ( MPI_Datatype dat )
 #ifdef HAVE_MPI_COMBINER_HVECTOR_INTEGER
         case MPI_COMBINER_HVECTOR_INTEGER:
 #endif
-            MPI_Type_extent ( datarr[0], &extent );
+	    MPI_Type_get_extent ( datarr[0], &lb, &extent );
             prevdisp = current->disp;
             for ( i = 0; i < intarr[0]; i++ ){
                 for ( j = 0; j < intarr[1]; j++ ) {
@@ -284,7 +284,7 @@ static EDDHR_head* EDDHR_decode_datatype ( MPI_Datatype dat )
             }
             break;
         case MPI_COMBINER_INDEXED:
-            MPI_Type_extent ( datarr[0] , &extent );
+	    MPI_Type_get_extent ( datarr[0] , &lb, &extent );
             for ( i = 0; i < intarr[0]; i++ ) {
                 for ( j = 0; j < intarr[i+1]; j++ ){
                     current->combiner = MPI_COMBINER_INDEXED;
@@ -312,7 +312,7 @@ static EDDHR_head* EDDHR_decode_datatype ( MPI_Datatype dat )
 #ifdef HAVE_MPI_COMBINER_HINDEXED_INTEGER
         case MPI_COMBINER_HINDEXED_INTEGER:
 #endif
-            MPI_Type_extent ( datarr[0] , &extent );
+	    MPI_Type_get_extent ( datarr[0] , &lb, &extent );
             for ( i = 0; i < intarr[0]; i++ ) {
                 for ( j = 0; j < intarr[i+1]; j++ ){                    
                     current->combiner = MPI_COMBINER_HINDEXED;
@@ -346,7 +346,7 @@ static EDDHR_head* EDDHR_decode_datatype ( MPI_Datatype dat )
         case MPI_COMBINER_STRUCT_INTEGER:
 #endif
             for ( i = 0; i < intarr[0] ; i++ ) {
-                MPI_Type_extent ( datarr[i], &extent );
+	        MPI_Type_get_extent ( datarr[i], &lb, &extent );
                 for ( j = 0; j < intarr[i+1]; j++ ) {
                     current->combiner = MPI_COMBINER_STRUCT;
                     SETDAT   ( current, datarr[i] );
@@ -831,7 +831,7 @@ static void EDDHR_compactlist ( EDDHR_head* head )
 {
     EDDHR_struct *current, *next;
     int done=0;
-    MPI_Aint extent;
+    MPI_Aint extent, lb;
     
     current = head->next;
     while (current != NULL ) {
@@ -843,7 +843,7 @@ static void EDDHR_compactlist ( EDDHR_head* head )
                 break; 
             }
 
-            MPI_Type_extent ( current->dat, &extent );
+            MPI_Type_get_extent ( current->dat, &lb, &extent );
             if ( (next->disp   == (current->count*extent+current->disp))   && 
                  (current->dat == next->dat)  ) {
                 /* These two blocks can be merged */

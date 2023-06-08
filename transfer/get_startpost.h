@@ -36,7 +36,7 @@
 #define LAT_COMMUNICATION_METHODOLOGY_INIT_FN(_c,_c1,_c2,_p,_dat,_mcnt,_inf,_buf,_s) {\
   int _size;                                                                       \
   MPI_Comm _tcomm, _wcomm, _ucomm;                                                 \
-  MPI_Aint _extent;                                                                \
+  MPI_Aint _extent, _lb;							   \
   MPI_Comm_size ( _c, &_size );                                                    \
   if ( _size > 2 ) {                                                               \
     /* Create the communicator used for the window */                              \
@@ -51,7 +51,7 @@
   else                                                                             \
     _ucomm = _c;                                                                   \
                                                                                    \
-  MPI_Type_extent ( _dat, &_extent );                                              \
+  MPI_Type_get_extent ( _dat, &_lb, &_extent );   		  		   \
   MPI_Win_create ( _buf, _extent*_mcnt, 1, _inf, _ucomm, &_c1 );                   \
   MPI_Comm_group ( _ucomm, &_c2);                                                  \
   if ( _size > 2 )  MPI_Comm_free (&_wcomm);                                       \

@@ -74,7 +74,7 @@ static void LAT_FILE_MEASUREMENT ( MPI_Comm comm, MPI_Datatype dat, int maxcount
     int cnt, i, size, flag, calclen=0;
     int band_limit, num_limit;
     int p = MPI_UNDEFINED;
-    MPI_Aint extent;
+    MPI_Aint extent, lb;
     EDDHR_head *eddhr_desc=NULL;
     struct LAT_file_object c;
     char *realname;
@@ -94,7 +94,7 @@ static void LAT_FILE_MEASUREMENT ( MPI_Comm comm, MPI_Datatype dat, int maxcount
     MPI_Comm_rank(MPI_COMM_WORLD, &c.rank); 
 
     MPI_Type_size ( dat, &size );
-    MPI_Type_extent ( dat, &extent );
+    MPI_Type_get_extent ( dat, &lb, &extent );
 
     asprintf(&realname,"%s/%s",path,testfile);
 

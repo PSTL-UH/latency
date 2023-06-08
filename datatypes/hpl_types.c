@@ -30,17 +30,17 @@ MPI_Datatype LAT_hpl_type (int numblocks, int blocklength, int distance)
   dbuf = ( double *) buf;
   dbufp = dbuf;
 
-  MPI_Address ( dbuf, &base );
+  MPI_Get_address ( dbuf, &base );
   for ( i = 0; i < numblocks; i++)
     {
       dbufp = dbuf + (i * (blocklength + distance));
-      MPI_Address ( dbufp, &(adr[i]));
+      MPI_Get_address ( dbufp, &(adr[i]));
       adr[i] -= base;
       carr[i] = blocklength;
       tarr[i] = MPI_DOUBLE;
     }
 
-  MPI_Type_struct ( numblocks, carr, adr, tarr, &newtype);
+  MPI_Type_create_struct ( numblocks, carr, adr, tarr, &newtype);
   MPI_Type_commit ( &newtype);
 
   free ( adr );

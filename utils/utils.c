@@ -191,9 +191,9 @@ void LAT_print_description (char * msg, char *comstr, MPI_Info info)
 char* LAT_alloc_memory ( int count, MPI_Datatype datatype )
 {
   char *tbuf;
-  MPI_Aint extent;
+  MPI_Aint extent, lb;
 
-  MPI_Type_extent ( datatype, &extent );
+  MPI_Type_get_extent ( datatype, &lb, &extent );
 
 #ifdef USE_MPI_ALLOC_MEM
   MPI_Alloc_mem ( count*extent, MPI_INFO_NULL, (void *)&tbuf );

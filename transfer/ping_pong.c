@@ -181,7 +181,7 @@ static void LAT_BANDWIDTH_MEASUREMENT_SEND (LAT_OBJTYPE obj, LAT_TMP_OBJTYPE tob
     double a[BAND_TESTS];
     int cnt, i, size, flag, calclen=0;
     int band_limit, num_limit;
-    MPI_Aint extent;
+    MPI_Aint extent, lb;
     EDDHR_head *eddhr_desc=NULL;
     struct LAT_comm_object c;
 
@@ -192,7 +192,7 @@ static void LAT_BANDWIDTH_MEASUREMENT_SEND (LAT_OBJTYPE obj, LAT_TMP_OBJTYPE tob
     int overlap_method=0;   /* adapt the problem size to transfer time */
 
     MPI_Type_size ( dat, &size );
-    MPI_Type_extent ( dat, &extent );
+    MPI_Type_get_extent ( dat, &lb, &extent );
 
     if ( info != MPI_INFO_NULL ) {
         CHECK_INFO_FOR_TESTRESULT(info, testresult);
@@ -319,7 +319,7 @@ static void LAT_BANDWIDTH_MEASUREMENT_RECV (LAT_OBJTYPE obj, LAT_TMP_OBJTYPE tob
     int band_limit, num_limit;
     double t1=0.0, t2=0.0, ttime=0.0;
 
-    MPI_Aint extent;
+    MPI_Aint extent, lb;
     EDDHR_head *eddhr_desc=NULL;
     struct LAT_comm_object c;
 
@@ -330,7 +330,7 @@ static void LAT_BANDWIDTH_MEASUREMENT_RECV (LAT_OBJTYPE obj, LAT_TMP_OBJTYPE tob
     int overlap_method=0;   /* adapt problem size to transfer time */
     
     MPI_Type_size ( dat, &size );
-    MPI_Type_extent (dat, &extent);
+    MPI_Type_get_extent (dat, &lb, &extent);
     
     if ( info != MPI_INFO_NULL ) {
         CHECK_INFO_FOR_TESTRESULT(info, testresult);

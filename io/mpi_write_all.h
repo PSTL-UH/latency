@@ -58,7 +58,7 @@
     len[_c.numseg] = 1;                                                                 \
     disp[_c.numseg] = (i*_c.size+_c.rank)*(_c.cnt/_c.numseg)*datsize;	                \
     type[_c.numseg] = MPI_UB;								\
-    MPI_Type_struct(_c.numseg + 1, len, disp, type, &_c.newtype);			\
+    MPI_Type_create_struct(_c.numseg + 1, len, disp, type, &_c.newtype);		\
     MPI_Type_commit(&_c.newtype);                                                       \
     MPI_File_set_view (_c.fd,0,_c.dat,_c.newtype,"native",_c.info);             \
     MPI_Type_free(&_c.newtype);							\
